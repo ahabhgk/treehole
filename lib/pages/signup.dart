@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:treehole/pages/tabs.dart';
-import 'package:treehole/pages/signup.dart';
 import 'package:treehole/theme.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignupPage extends StatefulWidget {
+  const SignupPage({Key? key}) : super(key: key);
 
-  static const route = '/login';
+  static const route = '/signup';
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 24),
           children: [
-            const SizedBox(height: 132),
+            const SizedBox(height: 120),
             Container(
               alignment: Alignment.center,
               child: Image.asset('assets/treehole.png'),
@@ -46,6 +46,15 @@ class _LoginPageState extends State<LoginPage> {
               ),
               obscureText: true,
             ),
+            const SizedBox(height: 12),
+            TextField(
+              textInputAction: TextInputAction.next,
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Confirm Password',
+              ),
+              obscureText: true,
+            ),
             const SizedBox(height: 24),
             ElevatedButton(
               style: TextButton.styleFrom(
@@ -53,22 +62,20 @@ class _LoginPageState extends State<LoginPage> {
                 primary: AppTheme.primaryTextColor,
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, TabsPage.route);
-              },
-              child: const Text('Login'),
+              onPressed: () {},
+              child: const Text('Register'),
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Don\'t have an account?'),
+                const Text('Already have an account?'),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, SignupPage.route);
+                    Navigator.pop(context, SignupPage.route);
                   },
                   child: const Text(
-                    ' Sign up',
+                    ' Login',
                     style: TextStyle(color: AppTheme.primaryColor),
                   ),
                 ),
