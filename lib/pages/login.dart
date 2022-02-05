@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/signup.dart';
-import 'package:treehole/theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  static const route = '/login';
+  static const String route = '/login';
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -49,8 +48,6 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 24),
             ElevatedButton(
               style: TextButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                primary: AppTheme.primaryTextColor,
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onPressed: () {
@@ -67,10 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.pushNamed(context, SignupPage.route);
                   },
-                  child: const Text(
-                    ' Sign up',
-                    style: TextStyle(color: AppTheme.primaryColor),
-                  ),
+                  child: Text(' Sign up'),
                 ),
               ],
             )

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:treehole/theme.dart';
+import 'package:treehole/pages/addPost.dart';
+import 'package:treehole/pages/tabs/found.dart';
+import 'package:treehole/pages/tabs/home.dart';
+import 'package:treehole/pages/tabs/notification.dart';
+import 'package:treehole/pages/tabs/profile.dart';
 
 class TabsPage extends StatefulWidget {
   const TabsPage({Key? key}) : super(key: key);
 
-  static const route = '/';
+  static const String route = '/';
 
   @override
   _TabsPageState createState() => _TabsPageState();
@@ -12,25 +16,11 @@ class TabsPage extends StatefulWidget {
 
 class _TabsPageState extends State<TabsPage> {
   int _tabIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _tabs = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: School',
-      style: optionStyle,
-    ),
+    HomeTabPage(),
+    FoundTabPage(),
+    NotificationTabPage(),
+    ProfileTabPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -42,6 +32,12 @@ class _TabsPageState extends State<TabsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _tabIndex == 0
+          ? FloatingActionButton(
+              onPressed: () => Navigator.pushNamed(context, AddPostPage.route),
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: SafeArea(
         child: _tabs.elementAt(_tabIndex),
       ),
@@ -68,7 +64,6 @@ class _TabsPageState extends State<TabsPage> {
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        selectedItemColor: AppTheme.primaryColor,
         onTap: _onItemTapped,
       ),
     );

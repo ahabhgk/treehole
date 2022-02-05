@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:treehole/theme.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
-  static const route = '/signup';
+  static const String route = '/signup';
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -49,7 +48,7 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 12),
             TextField(
               textInputAction: TextInputAction.next,
-              controller: _passwordController,
+              controller: _confirmPasswordController,
               decoration: const InputDecoration(
                 labelText: 'Confirm Password',
               ),
@@ -58,8 +57,6 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 24),
             ElevatedButton(
               style: TextButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                primary: AppTheme.primaryTextColor,
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onPressed: () {},
@@ -74,10 +71,7 @@ class _SignupPageState extends State<SignupPage> {
                   onTap: () {
                     Navigator.pop(context, SignupPage.route);
                   },
-                  child: const Text(
-                    ' Login',
-                    style: TextStyle(color: AppTheme.primaryColor),
-                  ),
+                  child: const Text(' Login'),
                 ),
               ],
             )
