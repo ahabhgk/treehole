@@ -11,6 +11,15 @@ class FoundTabPage extends StatefulWidget {
 class _FoundTabPageState extends State<FoundTabPage> {
   final TextEditingController _searchController = TextEditingController();
 
+  void _onShowFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const FilterDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,7 +47,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
               ),
               const SizedBox(width: 12),
               InkWell(
-                onTap: () {},
+                onTap: _onShowFilterDialog,
                 child: const SizedBox(
                   height: 36,
                   width: 36,
@@ -81,6 +90,75 @@ class _FoundTabPageState extends State<FoundTabPage> {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+enum OrderBy {
+  hot,
+  time,
+}
+
+class FilterDialog extends StatefulWidget {
+  const FilterDialog({Key? key}) : super(key: key);
+
+  @override
+  _FilterDialogState createState() => _FilterDialogState();
+}
+
+class _FilterDialogState extends State<FilterDialog> {
+  OrderBy? _orderBy = OrderBy.hot;
+
+  void _closeDialog() {
+    return Navigator.of(context).pop();
+  }
+
+  void _setAndSearch() {}
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Search result settings'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Order by: '),
+              DropdownButton(
+                value: _orderBy,
+                items: const [
+                  DropdownMenuItem(
+                    child: Text('Hot'),
+                    value: OrderBy.hot,
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Time'),
+                    value: OrderBy.time,
+                  ),
+                ],
+                onChanged: (OrderBy? value) {
+                  setState(() {
+                    _orderBy = value;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(primary: Theme.of(context).errorColor),
+          child: const Text('Cancel'),
+          onPressed: _closeDialog,
+        ),
+        TextButton(
+          child: const Text('Done'),
+          onPressed: _setAndSearch,
         ),
       ],
     );
