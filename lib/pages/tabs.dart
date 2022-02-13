@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/pages/addPost.dart';
 import 'package:treehole/pages/tabs/found.dart';
 import 'package:treehole/pages/tabs/home.dart';
 import 'package:treehole/pages/tabs/notification.dart';
 import 'package:treehole/pages/tabs/profile.dart';
+import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/utils/ui.dart';
 
 class TabsPage extends StatefulWidget {
   const TabsPage({Key? key}) : super(key: key);
@@ -67,5 +70,21 @@ class _TabsPageState extends State<TabsPage> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    authentication();
+  }
+
+  Future<void> authentication() async {
+    final auth = RepositoryProvider.of<AuthenticationRepository>(context);
+    final session = await auth.recoverSession();
+    if (session == null) {
+      redirectToLogin(context);
+    } else {
+      auth.setSession(session);
+    }
   }
 }
