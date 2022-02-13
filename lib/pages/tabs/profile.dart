@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/services/user.dart';
 
 class ProfileTabPage extends StatefulWidget {
   const ProfileTabPage({Key? key}) : super(key: key);
@@ -11,80 +13,91 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   final int _postsCount = 54;
   final int _followersCount = 834;
   final int _followingCount = 12;
-  final String username = '我的我的我的信息是这个页面';
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // user info
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
-          child: Row(
+    return BlocBuilder<UserCubit, UserState>(
+      builder: (context, state) {
+        if (state is UserLoaded) {
+          return Column(
             children: [
-              const CircleAvatar(
-                radius: 102 / 2,
-                child: CircleAvatar(
-                  radius: 96 / 2,
-                  backgroundImage: NetworkImage(
-                      'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
+              // user info
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+                child: Row(
                   children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        username,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                    CircleAvatar(
+                      radius: 102 / 2,
+                      child: CircleAvatar(
+                        radius: 96 / 2,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        backgroundImage: (state.profile.avatarUrl != null
+                                ? NetworkImage(state.profile.avatarUrl!)
+                                : const AssetImage('assets/default_avatar.png'))
+                            as ImageProvider<Object>,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ColumnTwoText(count: _postsCount, name: 'Posts'),
-                        ColumnTwoText(
-                            count: _followersCount, name: 'Followers'),
-                        ColumnTwoText(
-                            count: _followingCount, name: 'Following'),
-                      ],
-                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              state.profile.username,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ColumnTwoText(count: _postsCount, name: 'Posts'),
+                              ColumnTwoText(
+                                  count: _followersCount, name: 'Followers'),
+                              ColumnTwoText(
+                                  count: _followingCount, name: 'Following'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
+              ),
+              // page list
+              const Divider(height: 2, indent: 12, endIndent: 12),
+              const SubPageListItem(
+                icon: Icons.mood,
+                iconColor: Colors.deepPurple,
+                title: 'Mood',
+              ),
+              const Divider(height: 2, indent: 12, endIndent: 12),
+              const SubPageListItem(
+                icon: Icons.list,
+                iconColor: Colors.blue,
+                title: 'Quality',
+              ),
+              const Divider(height: 2, indent: 12, endIndent: 12),
+              const SubPageListItem(
+                icon: Icons.fiber_smart_record_outlined,
+                iconColor: Colors.deepOrange,
+                title: 'Match',
+              ),
+              const Divider(height: 2, indent: 12, endIndent: 12),
+              const SubPageListItem(
+                icon: Icons.settings,
+                iconColor: Colors.blueGrey,
+                title: 'Settings',
+              ),
             ],
-          ),
-        ),
-        // page list
-        const Divider(height: 2, indent: 12, endIndent: 12),
-        const SubPageListItem(
-          icon: Icons.mood,
-          iconColor: Colors.deepPurple,
-          title: 'Mood',
-        ),
-        const Divider(height: 2, indent: 12, endIndent: 12),
-        const SubPageListItem(
-          icon: Icons.list,
-          iconColor: Colors.blue,
-          title: 'Quality',
-        ),
-        const Divider(height: 2, indent: 12, endIndent: 12),
-        const SubPageListItem(
-          icon: Icons.fiber_smart_record_outlined,
-          iconColor: Colors.deepOrange,
-          title: 'Match',
-        ),
-        const Divider(height: 2, indent: 12, endIndent: 12),
-        const SubPageListItem(
-          icon: Icons.settings,
-          iconColor: Colors.blueGrey,
-          title: 'Settings',
-        ),
-      ],
+          );
+        } else {
+          throw Exception('User should loaded.');
+        }
+      },
     );
   }
 }

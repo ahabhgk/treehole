@@ -18,7 +18,7 @@ class AuthenticationRepository {
     required String password,
   }) async {
     final res = await _supabaseClient.auth.signUp(email, password);
-    if (res.data != null) {
+    if (res.data != null && res.error == null) {
       return res.data!.persistSessionString;
     } else {
       throw PlatformException(
@@ -32,7 +32,7 @@ class AuthenticationRepository {
   }) async {
     final res =
         await _supabaseClient.auth.signIn(email: email, password: password);
-    if (res.data != null) {
+    if (res.data != null && res.error == null) {
       return res.data!.persistSessionString;
     } else {
       throw PlatformException(code: 'login error', message: res.error?.message);
@@ -43,7 +43,7 @@ class AuthenticationRepository {
     final session = await getSession();
     if (session != null) {
       final res = await _supabaseClient.auth.recoverSession(session);
-      if (res.data != null) {
+      if (res.data != null && res.error == null) {
         return res.data!.persistSessionString;
       } else {
         throw PlatformException(
@@ -59,5 +59,9 @@ class AuthenticationRepository {
 
   Future<String?> getSession() {
     return _localStorage.read(key: persistentSessionKey);
+  }
+
+  String? userId() {
+    return _supabaseClient.auth.user()?.id;
   }
 }

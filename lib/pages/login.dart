@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase/supabase.dart';
 import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/services/user.dart';
 import 'package:treehole/utils/ui.dart';
+import 'package:treehole/utils/validator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,74 +22,77 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() async {
-    try {
-      final auth = RepositoryProvider.of<AuthenticationRepository>(context);
-      final session = await auth.login(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      auth.setSession(session);
-      redirectToTabs(context);
-    } on PlatformException catch (err) {
-      context.showErrorSnackbar(err.message ?? 'Error loging in');
-    } catch (err) {
-      context.showErrorSnackbar('Error loging in');
+  final _formKey = GlobalKey<FormState>();
+
+  void _login() {
+    if (_formKey.currentState!.validate()) {
+      BlocProvider.of<UserCubit>(context).login(
+          email: _emailController.text, password: _passwordController.text);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          children: [
-            const SizedBox(height: 132),
-            Container(
-              alignment: Alignment.center,
-              child: Image.asset('assets/treehole.png'),
-            ),
-            const SizedBox(height: 36),
-            TextField(
-              textInputAction: TextInputAction.next,
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              textInputAction: TextInputAction.next,
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              onPressed: _login,
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return BlocConsumer<UserCubit, UserState>(
+      listener: (context, state) {
+        if (state is UserLoaded) {
+          redirectToTabs(context);
+        } else if (state is UserError) {
+          context.showErrorSnackbar(state.message);
+        }
+      },
+      builder: (context, state) => Scaffold(
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               children: [
-                const Text('Don\'t have an account?'),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, SignupPage.route);
-                  },
-                  child: Text(' Sign up'),
+                const SizedBox(height: 132),
+                Container(
+                  alignment: Alignment.center,
+                  child: Image.asset('assets/treehole.png'),
                 ),
+                const SizedBox(height: 36),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  validator: Validator.email,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: Validator.password,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: state is UserLogingIn ? null : _login,
+                  child: Text(state is UserLogingIn ? 'Loging in...' : 'Login'),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Don\'t have an account?'),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, SignupPage.route);
+                      },
+                      child: const Text(' Sign up'),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
