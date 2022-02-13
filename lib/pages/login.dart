@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase/supabase.dart';
-import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/signup.dart';
-import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/services/user.dart';
 import 'package:treehole/utils/ui.dart';
 import 'package:treehole/utils/validator.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:treehole/pages/addPost.dart';
+import 'package:treehole/pages/add_post.dart';
 import 'package:treehole/pages/landing.dart';
 import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/login.dart';

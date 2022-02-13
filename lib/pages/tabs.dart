@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:treehole/pages/addPost.dart';
+import 'package:treehole/pages/add_post.dart';
 import 'package:treehole/pages/tabs/found.dart';
 import 'package:treehole/pages/tabs/home.dart';
 import 'package:treehole/pages/tabs/notification.dart';
 import 'package:treehole/pages/tabs/profile.dart';
-import 'package:treehole/services/user.dart';
-import 'package:treehole/utils/ui.dart';
 
 class TabsPage extends StatefulWidget {
   const TabsPage({Key? key}) : super(key: key);
