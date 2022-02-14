@@ -128,6 +128,8 @@ class _SignupPageState extends State<SignupPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 }

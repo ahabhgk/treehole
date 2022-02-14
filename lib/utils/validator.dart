@@ -25,4 +25,11 @@ class Validator {
     }
     return 'Please enter valid password';
   }
+
+  static String? postContent(String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Post content can\'t be empty';
+    }
+    return null;
+  }
 }

@@ -11,8 +11,7 @@ class ProfileTabPage extends StatefulWidget {
 
 class _ProfileTabPageState extends State<ProfileTabPage> {
   final int _postsCount = 54;
-  final int _followersCount = 834;
-  final int _followingCount = 12;
+  final int _palsCount = 12;
 
   @override
   Widget build(BuildContext context) {
@@ -47,18 +46,16 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                             child: Text(
                               state.profile.username,
                               style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              ColumnTwoText(count: _postsCount, name: 'Posts'),
-                              ColumnTwoText(
-                                  count: _followersCount, name: 'Followers'),
-                              ColumnTwoText(
-                                  count: _followingCount, name: 'Following'),
+                              PairText(count: _postsCount, name: 'Posts'),
+                              const SizedBox(width: 36),
+                              PairText(count: _palsCount, name: 'Pals'),
                             ],
                           ),
                         ],
@@ -102,8 +99,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   }
 }
 
-class ColumnTwoText extends StatelessWidget {
-  const ColumnTwoText({
+class PairText extends StatelessWidget {
+  const PairText({
     Key? key,
     required this.count,
     required this.name,
@@ -114,15 +111,17 @@ class ColumnTwoText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           count.toString(),
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(width: 6),
         Text(name),
       ],
     );

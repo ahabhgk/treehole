@@ -9,7 +9,9 @@ import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
+import 'package:treehole/services/post.dart';
 import 'package:treehole/services/user.dart';
 
 void main() async {
@@ -45,6 +47,11 @@ class MyApp extends StatelessWidget {
             supabaseClient: _supabaseClient,
           ),
         ),
+        RepositoryProvider<PostRepository>(
+          create: (context) => PostRepository(
+            supabaseClient: _supabaseClient,
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -53,6 +60,13 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               profileRepo: RepositoryProvider.of<ProfileRepository>(context),
+            ),
+          ),
+          BlocProvider<PostCubit>(
+            create: (context) => PostCubit(
+              authRepo:
+                  RepositoryProvider.of<AuthenticationRepository>(context),
+              postRepo: RepositoryProvider.of<PostRepository>(context),
             ),
           )
         ],
