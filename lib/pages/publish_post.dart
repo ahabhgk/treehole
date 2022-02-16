@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:treehole/services/post.dart';
+import 'package:treehole/components/header.dart';
+import 'package:treehole/services/publish_post.dart';
 import 'package:treehole/utils/ui.dart';
 import 'package:treehole/utils/validator.dart';
 
@@ -16,21 +17,22 @@ class AddPostPage extends StatefulWidget {
 class _AddPostPageState extends State<AddPostPage> {
   final _formKey = GlobalKey<FormState>();
 
-  void _publish(BuildContext context, PostState state) async {
-    if (state is PostDraft) {
-      BlocProvider.of<PostCubit>(context).publishPost(state.content);
+  void _publish(BuildContext context, PublishPostState state) async {
+    if (state is PublishPostDraft) {
+      BlocProvider.of<PublishPostCubit>(context).publishPost(state.content);
       Navigator.of(context).pop();
-    } else if (state is PostEmpty) {
+      context.showSnackbar('Publish post success.');
+    } else if (state is PublishPostEmpty) {
       context.showSnackbar('Post content can\'t be empty.');
     }
   }
 
   void _updatePostContent(String content) {
-    BlocProvider.of<PostCubit>(context).updateContent(content);
+    BlocProvider.of<PublishPostCubit>(context).updateContent(content);
   }
 
-  void _cancel(PostState state) async {
-    if (state is PostDraft) {
+  void _cancel(PublishPostState state) async {
+    if (state is PublishPostDraft) {
       await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -39,7 +41,7 @@ class _AddPostPageState extends State<AddPostPage> {
             TextButton(
               child: const Text('No'),
               onPressed: () {
-                BlocProvider.of<PostCubit>(context).clearContent();
+                BlocProvider.of<PublishPostCubit>(context).clearContent();
                 Navigator.pop(context);
               },
             ),
@@ -58,9 +60,9 @@ class _AddPostPageState extends State<AddPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PostCubit, PostState>(
+    return BlocConsumer<PublishPostCubit, PublishPostState>(
       listener: (context, state) {
-        if (state is PostPublishError) {
+        if (state is PublishPostError) {
           context.showErrorSnackbar(state.message);
         }
       },
@@ -68,10 +70,7 @@ class _AddPostPageState extends State<AddPostPage> {
         body: SafeArea(
           child: Column(
             children: [
-              Container(
-                alignment: Alignment.center,
-                height: 36,
-                margin: const EdgeInsets.all(12),
+              Header(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -80,17 +79,16 @@ class _AddPostPageState extends State<AddPostPage> {
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
-                      onPressed: state is PostPublishing
+                      onPressed: state is PublishPostPublishing
                           ? null
                           : () => _publish(context, state),
-                      child: Text(state is PostPublishing
+                      child: Text(state is PublishPostPublishing
                           ? 'Publishing...'
                           : 'Publish'),
                     ),
                   ],
                 ),
               ),
-              const Divider(height: 2),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -99,7 +97,8 @@ class _AddPostPageState extends State<AddPostPage> {
                     child: TextFormField(
                       minLines: 10,
                       maxLines: 20,
-                      initialValue: state is PostDraft ? state.content : '',
+                      initialValue:
+                          state is PublishPostDraft ? state.content : '',
                       onChanged: _updatePostContent,
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.zero,

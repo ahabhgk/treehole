@@ -18,71 +18,66 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
-          child: Column(
+    return Container(
+      padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 48 / 2,
-                    backgroundImage: NetworkImage(
-                        'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg'),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            username,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            updateAt.toString(),
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ],
+              const CircleAvatar(
+                radius: 48 / 2,
+                backgroundImage: NetworkImage(
+                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg'),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        username,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const SizedBox(width: 48 + 12),
-                  Expanded(
-                    child: Text(
-                      content,
-                      style: const TextStyle(fontSize: 16),
+                    const SizedBox(height: 6),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        updateAt.toString(),
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    icon: Icon(Icons.favorite_border),
-                    label: Text(likes.toString()),
-                  )
-                ],
-              ),
+                  ],
+                ),
+              )
             ],
           ),
-        ),
-        const Divider(height: 2, indent: 12, endIndent: 12),
-      ],
+          Row(
+            children: [
+              const SizedBox(width: 48 + 12),
+              Expanded(
+                child: Text(
+                  content,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () {},
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                icon: const Icon(Icons.favorite_border),
+                label: Text(likes.toString()),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

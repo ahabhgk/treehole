@@ -26,4 +26,18 @@ class PostRepository {
           code: 'publish post error', message: res.error?.message);
     }
   }
+
+  Future<List<Post>> getPostsByAuthorId(String id) async {
+    final res = await _supabaseClient
+        .from('posts')
+        .select('*')
+        .eq('author_id', id)
+        .execute();
+    if (res.data != null && res.error == null) {
+      return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
+    } else {
+      throw PlatformException(
+          code: 'get posts error', message: res.error?.message);
+    }
+  }
 }

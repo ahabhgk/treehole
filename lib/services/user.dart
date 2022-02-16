@@ -41,11 +41,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<Profile> loadProfile() async {
     final id = _authRepo.userId();
-    if (id != null) {
-      return _profileRepo.getUserProfile(id);
-    } else {
-      throw Exception('loadProfile should call after user loged in.');
-    }
+    return _profileRepo.getUserProfile(id);
   }
 
   Future<void> saveProfile({
@@ -53,12 +49,8 @@ class UserCubit extends Cubit<UserState> {
     String? avatarUrl,
   }) async {
     final id = _authRepo.userId();
-    if (id != null) {
-      final profile = Profile(id: id, username: username, avatarUrl: avatarUrl);
-      await _profileRepo.saveUserProfile(profile);
-    } else {
-      throw Exception('saveProfile should call after user signed in.');
-    }
+    final profile = Profile(id: id, username: username, avatarUrl: avatarUrl);
+    await _profileRepo.saveUserProfile(profile);
   }
 
   Future<void> recover() async {

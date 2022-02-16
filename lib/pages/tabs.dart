@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:treehole/pages/add_post.dart';
+import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/tabs/found.dart';
 import 'package:treehole/pages/tabs/home.dart';
 import 'package:treehole/pages/tabs/notification.dart';

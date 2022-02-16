@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:treehole/components/header.dart';
 import 'package:treehole/components/post.dart';
 
 class FoundTabPage extends StatefulWidget {
@@ -24,10 +25,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          alignment: Alignment.center,
-          height: 36,
-          margin: const EdgeInsets.all(12),
+        Header(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -57,7 +55,6 @@ class _FoundTabPageState extends State<FoundTabPage> {
             ],
           ),
         ),
-        const Divider(height: 2),
         Expanded(
           child: ListView(
             children: [

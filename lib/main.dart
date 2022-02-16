@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:treehole/pages/add_post.dart';
+import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/landing.dart';
+import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
-import 'package:treehole/services/post.dart';
+import 'package:treehole/services/my_posts.dart';
+import 'package:treehole/services/publish_post.dart';
 import 'package:treehole/services/user.dart';
 
 void main() async {
@@ -62,13 +64,20 @@ class MyApp extends StatelessWidget {
               profileRepo: RepositoryProvider.of<ProfileRepository>(context),
             ),
           ),
-          BlocProvider<PostCubit>(
-            create: (context) => PostCubit(
+          BlocProvider<PublishPostCubit>(
+            create: (context) => PublishPostCubit(
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
             ),
-          )
+          ),
+          BlocProvider<MyPostsCubit>(
+            create: (context) => MyPostsCubit(
+              authRepo:
+                  RepositoryProvider.of<AuthenticationRepository>(context),
+              postRepo: RepositoryProvider.of<PostRepository>(context),
+            ),
+          ),
         ],
         child: _buildView(context),
       ),
@@ -127,6 +136,11 @@ class MyApp extends StatelessWidget {
           case TabsPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const TabsPage(),
+              settings: settings,
+            );
+          case MyPostsPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) => const MyPostsPage(),
               settings: settings,
             );
           case LoginPage.route:

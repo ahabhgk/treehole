@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/services/user.dart';
 
 class ProfileTabPage extends StatefulWidget {
@@ -52,10 +53,32 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                           const SizedBox(height: 12),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              PairText(count: _postsCount, name: 'Posts'),
-                              const SizedBox(width: 36),
-                              PairText(count: _palsCount, name: 'Pals'),
+                              PairText(
+                                count: _postsCount,
+                                name: 'Posts',
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(MyPostsPage.route);
+                                },
+                              ),
+                              PairText(
+                                count: _palsCount,
+                                name: 'Pals',
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(MyPostsPage.route);
+                                },
+                              ),
+                              PairText(
+                                count: _palsCount,
+                                name: 'Likes',
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(MyPostsPage.route);
+                                },
+                              ),
                             ],
                           ),
                         ],
@@ -104,26 +127,31 @@ class PairText extends StatelessWidget {
     Key? key,
     required this.count,
     required this.name,
+    required this.onTap,
   }) : super(key: key);
 
   final int count;
   final String name;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          count.toString(),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            count.toString(),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(width: 6),
-        Text(name),
-      ],
+          const SizedBox(width: 6),
+          Text(name),
+        ],
+      ),
     );
   }
 }

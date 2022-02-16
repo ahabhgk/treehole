@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:treehole/components/header.dart';
 import 'package:treehole/components/post.dart';
 
 class HomeTabPage extends StatefulWidget {
@@ -13,13 +14,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          alignment: Alignment.center,
-          height: 36,
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          child: Image.asset('assets/treehole.png'),
-        ),
-        const Divider(height: 2),
+        Header(child: Image.asset('assets/treehole.png')),
         Expanded(
           child: ListView(
             children: [

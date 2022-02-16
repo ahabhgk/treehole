@@ -61,7 +61,12 @@ class AuthenticationRepository {
     return _localStorage.read(key: persistentSessionKey);
   }
 
-  String? userId() {
-    return _supabaseClient.auth.user()?.id;
+  String userId() {
+    final id = _supabaseClient.auth.user()?.id;
+    if (id != null) {
+      return id;
+    } else {
+      throw Exception('Panic: userId() should call after the user login');
+    }
   }
 }
