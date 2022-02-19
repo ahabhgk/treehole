@@ -9,7 +9,7 @@ class ProfileRepository {
 
   final SupabaseClient _supabaseClient;
 
-  Future<Profile> getUserProfile(String id) async {
+  Future<Profile> fetchUserProfile(String id) async {
     final res = await _supabaseClient
         .from('profiles')
         .select()
@@ -20,7 +20,7 @@ class ProfileRepository {
       return Profile.fromJson(res.data);
     } else {
       throw PlatformException(
-          code: 'get user profile error', message: res.error?.message);
+          code: 'fetch user profile error', message: res.error?.message);
     }
   }
 

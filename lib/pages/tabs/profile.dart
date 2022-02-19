@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/pages/my_posts.dart';
+import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/pal.dart';
+import 'package:treehole/repositories/post.dart';
+import 'package:treehole/repositories/profile.dart';
+import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/user.dart';
+import 'package:treehole/utils/ui.dart';
 
 class ProfileTabPage extends StatefulWidget {
   const ProfileTabPage({Key? key}) : super(key: key);
@@ -11,8 +17,15 @@ class ProfileTabPage extends StatefulWidget {
 }
 
 class _ProfileTabPageState extends State<ProfileTabPage> {
-  final int _postsCount = 54;
-  final int _palsCount = 12;
+  void _getCounts() async {
+    BlocProvider.of<CountsCubit>(context).getCounts();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCounts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,35 +64,42 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              PairText(
-                                count: _postsCount,
-                                name: 'Posts',
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(MyPostsPage.route);
-                                },
-                              ),
-                              PairText(
-                                count: _palsCount,
-                                name: 'Pals',
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(MyPostsPage.route);
-                                },
-                              ),
-                              PairText(
-                                count: _palsCount,
-                                name: 'Likes',
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(MyPostsPage.route);
-                                },
-                              ),
-                            ],
+                          BlocConsumer<CountsCubit, CountsState>(
+                            listener: (context, state) {
+                              if (state is CountsError) {
+                                context.showErrorSnackbar(state.message);
+                              }
+                            },
+                            builder: (context, state) => Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                PairText(
+                                  count: state.postsCount,
+                                  name: 'Posts',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .pushNamed(MyPostsPage.route);
+                                  },
+                                ),
+                                PairText(
+                                  count: state.palsCount,
+                                  name: 'Pals',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .pushNamed(MyPostsPage.route);
+                                  },
+                                ),
+                                PairText(
+                                  count: state.likesCount,
+                                  name: 'Likes',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .pushNamed(MyPostsPage.route);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -125,12 +145,12 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 class PairText extends StatelessWidget {
   const PairText({
     Key? key,
-    required this.count,
+    this.count,
     required this.name,
     required this.onTap,
   }) : super(key: key);
 
-  final int count;
+  final int? count;
   final String name;
   final void Function()? onTap;
 
@@ -142,7 +162,7 @@ class PairText extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            count.toString(),
+            (count ?? '...').toString(),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

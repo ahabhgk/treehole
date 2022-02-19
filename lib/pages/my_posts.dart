@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
+import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/services/my_posts.dart';
 import 'package:treehole/utils/ui.dart';
@@ -27,7 +28,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
 
   Widget _buildPosts(MyPostsState state) {
     if (state is MyPostsLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Loading();
     } else if (state is MyPostsLoaded) {
       final posts = state.posts
           .map((post) => PostWidget(
@@ -36,10 +37,10 @@ class _MyPostsPageState extends State<MyPostsPage> {
                     'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
                 content: post.content,
                 likes: 100,
-                updateAt: post.createdAt,
+                createdAt: post.createdAt,
               ))
           .toList();
-      return ListView(children: posts);
+      return ListView(children: withDivider(posts));
     } else if (state is MyPostsLoadError) {
       return Center(
         child: Column(

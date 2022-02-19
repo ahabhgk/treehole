@@ -65,7 +65,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                 content:
                     'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhah',
                 likes: 100,
-                updateAt: DateTime.parse('2012-02-27 13:27:00'),
+                createdAt: DateTime.parse('2012-02-27 13:27:00'),
               ),
               PostWidget(
                 username: 'ahahbahahha',
@@ -74,7 +74,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                 content:
                     'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhaha',
                 likes: 100,
-                updateAt: DateTime.parse('2012-02-27 13:27:00'),
+                createdAt: DateTime.parse('2012-02-27 13:27:00'),
               ),
               PostWidget(
                 username: 'ahahbahahha',
@@ -83,7 +83,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                 content:
                     'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahh',
                 likes: 100,
-                updateAt: DateTime.parse('2012-02-27 13:27:00'),
+                createdAt: DateTime.parse('2012-02-27 13:27:00'),
               ),
             ],
           ),
@@ -94,6 +94,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
 }
 
 enum OrderBy {
+  suitability,
   hot,
   time,
 }
@@ -128,6 +129,10 @@ class _FilterDialogState extends State<FilterDialog> {
               DropdownButton(
                 value: _orderBy,
                 items: const [
+                  DropdownMenuItem(
+                    child: Text('Suitability'),
+                    value: OrderBy.suitability,
+                  ),
                   DropdownMenuItem(
                     child: Text('Hot'),
                     value: OrderBy.hot,

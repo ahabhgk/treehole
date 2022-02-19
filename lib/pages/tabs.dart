@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/tabs/found.dart';
-import 'package:treehole/pages/tabs/home.dart';
+import 'package:treehole/pages/tabs/feed.dart';
 import 'package:treehole/pages/tabs/notification.dart';
 import 'package:treehole/pages/tabs/profile.dart';
 
@@ -17,7 +17,7 @@ class TabsPage extends StatefulWidget {
 class _TabsPageState extends State<TabsPage> {
   int _tabIndex = 0;
   static const List<Widget> _tabs = <Widget>[
-    HomeTabPage(),
+    FeedTabPage(),
     FoundTabPage(),
     NotificationTabPage(),
     ProfileTabPage(),
@@ -45,7 +45,7 @@ class _TabsPageState extends State<TabsPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Feed',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),

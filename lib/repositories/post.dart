@@ -27,7 +27,7 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> getPostsByAuthorId(String id) async {
+  Future<List<Post>> fetchPostsByAuthorId(String id) async {
     final res = await _supabaseClient
         .from('posts')
         .select('*')
@@ -37,7 +37,32 @@ class PostRepository {
       return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
     } else {
       throw PlatformException(
-          code: 'get posts error', message: res.error?.message);
+          code: 'fetch user posts error', message: res.error?.message);
+    }
+  }
+
+  Future<int> fetchPostsCountByAuthorId(String id) async {
+    final res = await _supabaseClient
+        .from('posts')
+        .select('')
+        .eq('author_id', id)
+        .execute(count: CountOption.exact);
+    if (res.data != null && res.error == null) {
+      return res.count!;
+    } else {
+      throw PlatformException(
+          code: 'fetch user posts count error', message: res.error?.message);
+    }
+  }
+
+  Future<List<Post>> fetchPalsPosts(String id) async {
+    final res = await _supabaseClient
+        .rpc('feed_posts', params: {'user_id': id}).execute();
+    if (res.data != null && res.error == null) {
+      return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
+    } else {
+      throw PlatformException(
+          code: 'fetch pals posts error', message: res.error?.message);
     }
   }
 }

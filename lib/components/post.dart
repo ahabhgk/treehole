@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:treehole/utils/ui.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({
     Key? key,
     required this.username,
     required this.avatarUrl,
-    required this.updateAt,
+    required this.createdAt,
     required this.content,
     required this.likes,
+    this.onAvatarTap,
   }) : super(key: key);
 
   final String username;
   final String avatarUrl;
-  final DateTime updateAt;
+  final DateTime createdAt;
   final String content;
   final int likes;
+  final void Function()? onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +27,13 @@ class PostWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                radius: 48 / 2,
-                backgroundImage: NetworkImage(
-                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg'),
+              GestureDetector(
+                onTap: onAvatarTap,
+                child: const CircleAvatar(
+                  radius: 48 / 2,
+                  backgroundImage: NetworkImage(
+                      'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg'),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -45,7 +51,7 @@ class PostWidget extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        updateAt.toString(),
+                        getDisplayTime(createdAt),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),

@@ -41,7 +41,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<Profile> loadProfile() async {
     final id = _authRepo.userId();
-    return _profileRepo.getUserProfile(id);
+    return _profileRepo.fetchUserProfile(id);
   }
 
   Future<void> saveProfile({
