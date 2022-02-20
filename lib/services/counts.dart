@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/pal.dart';
+import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/repositories/post.dart';
 
 class CountsState {
@@ -38,22 +38,22 @@ class CountsCubit extends Cubit<CountsState> {
   CountsCubit({
     required PostRepository postRepo,
     required AuthenticationRepository authRepo,
-    required PalRepository palRepo,
+    required FollowRepository followRepo,
   })  : _postRepo = postRepo,
         _authRepo = authRepo,
-        _palRepo = palRepo,
+        _followRepo = followRepo,
         super(CountsState());
 
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
-  final PalRepository _palRepo;
+  final FollowRepository _followRepo;
 
   Future<void> getCounts() async {
     final id = _authRepo.userId();
     try {
       final counts = await Future.wait([
         _postRepo.fetchPostsCountByAuthorId(id),
-        _palRepo.fetchPalsCountByUserId(id),
+        _followRepo.fetchPalsCountByUserId(id),
       ]);
       emit(state.update(postsCount: counts[0], palsCount: counts[1]));
     } on PlatformException catch (err) {

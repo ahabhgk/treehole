@@ -42,8 +42,7 @@ class FeedCubit extends Cubit<FeedState> {
     final userId = _authRepo.userId();
     try {
       emit(FeedLoading(posts: state.posts));
-      final posts = await _postRepo.fetchPalsPosts(userId);
-      posts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      final posts = await _postRepo.fetchFeedPosts(userId);
       emit(FeedLoaded(posts: posts));
     } on PlatformException catch (err) {
       emit(FeedError(

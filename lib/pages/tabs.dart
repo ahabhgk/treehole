@@ -16,6 +16,7 @@ class TabsPage extends StatefulWidget {
 
 class _TabsPageState extends State<TabsPage> {
   int _tabIndex = 0;
+
   static const List<Widget> _tabs = <Widget>[
     FeedTabPage(),
     FoundTabPage(),

@@ -1,2 +1,4 @@
+import 'package:flutter/material.dart';
+
 const persistentSessionKey = 'persistentSessionKey';
-const defaultAvatarUrl = '';
+const defaultAvatarImage = AssetImage('assets/default_avatar.png');

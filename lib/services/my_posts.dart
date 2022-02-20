@@ -38,7 +38,6 @@ class MyPostsCubit extends Cubit<MyPostsState> {
     try {
       emit(MyPostsLoading());
       final posts = await _postRepo.fetchPostsByAuthorId(authorId);
-      posts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       emit(MyPostsLoaded(posts: posts));
     } on PlatformException catch (err) {
       emit(MyPostsLoadError(message: err.message ?? 'Error get user posts.'));

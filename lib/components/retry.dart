@@ -12,6 +12,7 @@ class Retry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.error_outline,
@@ -19,7 +20,7 @@ class Retry extends StatelessWidget {
           ),
           TextButton(
             onPressed: onRetry,
-            child: const Text('retry'),
+            child: const Text('Retry'),
           ),
         ],
       ),

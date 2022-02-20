@@ -9,7 +9,7 @@ class PostRepository {
 
   final SupabaseClient _supabaseClient;
 
-  Future<Post> publishPost({
+  Future<void> publishPost({
     required String authorId,
     required String content,
   }) async {
@@ -20,7 +20,7 @@ class PostRepository {
       },
     ]).execute();
     if (res.data != null && res.error == null) {
-      return Post.fromJson(res.data[0]);
+      return;
     } else {
       throw PlatformException(
           code: 'publish post error', message: res.error?.message);
@@ -30,11 +30,14 @@ class PostRepository {
   Future<List<Post>> fetchPostsByAuthorId(String id) async {
     final res = await _supabaseClient
         .from('posts')
-        .select('*')
+        .select('*, profiles(username, avatar_url)')
         .eq('author_id', id)
+        .order('created_at', ascending: false)
         .execute();
     if (res.data != null && res.error == null) {
-      return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
+      return (res.data as List<dynamic>)
+          .map((e) => Post.fromJson({...e, ...e['profiles']}))
+          .toList();
     } else {
       throw PlatformException(
           code: 'fetch user posts error', message: res.error?.message);
@@ -55,14 +58,14 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchPalsPosts(String id) async {
+  Future<List<Post>> fetchFeedPosts(String id) async {
     final res = await _supabaseClient
         .rpc('feed_posts', params: {'user_id': id}).execute();
     if (res.data != null && res.error == null) {
       return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
     } else {
       throw PlatformException(
-          code: 'fetch pals posts error', message: res.error?.message);
+          code: 'fetch feed posts error', message: res.error?.message);
     }
   }
 }

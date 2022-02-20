@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/components/empty.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/components/retry.dart';
-import 'package:treehole/models/post.dart';
-import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/post.dart';
 import 'package:treehole/services/feed.dart';
 import 'package:treehole/utils/ui.dart';
 
@@ -43,19 +41,23 @@ class _FeedTabPageState extends State<FeedTabPage> {
                 }
               },
               builder: (context, state) {
-                if (state.posts != null) {
-                  return ListView(
-                    children: withDivider(state.posts!
-                        .map((post) => PostWidget(
-                              username: 'ahahbahahha',
-                              avatarUrl:
-                                  'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
-                              content: post.content,
-                              likes: 100,
-                              createdAt: post.createdAt,
-                            ))
-                        .toList()),
-                  );
+                final posts = state.posts;
+                if (posts != null) {
+                  if (posts.isEmpty) {
+                    return const EmptyFiller(tips: 'Go find more!');
+                  } else {
+                    return ListView(
+                      children: withDivider(posts
+                          .map((post) => PostWidget(
+                                username: post.username,
+                                avatarUrl: post.avatarUrl,
+                                content: post.content,
+                                likes: 100,
+                                createdAt: post.createdAt,
+                              ))
+                          .toList()),
+                    );
+                  }
                 } else if (state is FeedError) {
                   return Retry(onRetry: _loadFeeds);
                 } else if (state is FeedLoading) {

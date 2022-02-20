@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/pal.dart';
+import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/user.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class ProfileTabPage extends StatefulWidget {
@@ -46,9 +47,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         radius: 96 / 2,
                         backgroundColor: Theme.of(context).backgroundColor,
                         backgroundImage: (state.profile.avatarUrl != null
-                                ? NetworkImage(state.profile.avatarUrl!)
-                                : const AssetImage('assets/default_avatar.png'))
-                            as ImageProvider<Object>,
+                            ? NetworkImage(state.profile.avatarUrl!)
+                            : defaultAvatarImage) as ImageProvider<Object>,
                       ),
                     ),
                     const SizedBox(width: 12),

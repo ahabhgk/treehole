@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
+import 'package:treehole/components/retry.dart';
 import 'package:treehole/services/my_posts.dart';
 import 'package:treehole/utils/ui.dart';
 
@@ -32,9 +33,8 @@ class _MyPostsPageState extends State<MyPostsPage> {
     } else if (state is MyPostsLoaded) {
       final posts = state.posts
           .map((post) => PostWidget(
-                username: 'ahahbahahha',
-                avatarUrl:
-                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
+                username: post.username,
+                avatarUrl: post.avatarUrl,
                 content: post.content,
                 likes: 100,
                 createdAt: post.createdAt,
@@ -42,22 +42,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
           .toList();
       return ListView(children: withDivider(posts));
     } else if (state is MyPostsLoadError) {
-      return Center(
-        child: Column(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Theme.of(context).errorColor,
-            ),
-            TextButton(
-              onPressed: () {
-                _loadMyPosts();
-              },
-              child: const Text('retry'),
-            ),
-          ],
-        ),
-      );
+      return Retry(onRetry: _loadMyPosts);
     } else {
       throw Exception('Panic: unreachable');
     }
