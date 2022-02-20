@@ -71,21 +71,32 @@ class PostRepository {
 
   Future<List<Post>> fetchFoundPosts(
     String id, {
+    String? keyword,
     required OrderBy orderBy,
   }) async {
-    var builder = _supabaseClient
+    dynamic builder = _supabaseClient
         .from('posts')
-        .select('*, profiles(username, avatar_url)')
-        .order('created_at', ascending: false);
+        .select('*, profiles(username, avatar_url)');
+    if (keyword != null) {
+      builder = builder.or('content.ilike.%$keyword%');
+      // FIXME(upstream): https://github.com/supabase/supabase/blob/c097ad5538b311f2f2bf4f877987021e47d8ed4e/web/spec/dart.yml#L1237
+      // .or('username.ilike.%$keyword%', foreignTable: 'profiles');
+    }
     if (orderBy == OrderBy.hot) {
       // TODO add likes table
-      // builder.order('column');
+      // builder = builder.order('column');
+    } else if (orderBy == OrderBy.suitability) {
+      // TODO add likes table
+      // builder = builder.order('column');
+    } else if (orderBy == OrderBy.time) {
+      builder = builder.order('created_at', ascending: false);
     }
-    final res = await builder.execute();
+    final PostgrestResponse<dynamic> res = await builder.execute();
     if (res.data != null && res.error == null) {
-      return (res.data as List<dynamic>)
-          .map((e) => Post.fromJson({...e, ...e['profiles']}))
-          .toList();
+      return (res.data as List<dynamic>).map((e) {
+        final p = Post.fromJson({...e, ...e['profiles']});
+        return p;
+      }).toList();
     } else {
       throw PlatformException(
           code: 'fetch feed posts error', message: res.error?.message);

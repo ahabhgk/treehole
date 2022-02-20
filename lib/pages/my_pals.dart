@@ -63,7 +63,7 @@ class _MyPalsPageState extends State<MyPalsPage> {
           children: [
             const Header(
               child: Text(
-                'My Posts',
+                'My Pals',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

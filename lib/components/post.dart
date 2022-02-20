@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:treehole/utils/constants.dart';
-import 'package:treehole/utils/ui.dart';
+import 'package:treehole/utils/utils.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({

@@ -1,16 +1,28 @@
 # treehole
 
-A new Flutter project.
+## supabase setup SQL
 
-## Getting Started
+TODO
 
-This project is a starting point for a Flutter application.
+## roadmap
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [x] 注册、登录
+- [x] 个人信息
+- [x] 黑暗模式
+- [x] 发布推文
+- [x] 我的推文
+- [x] 订阅推文
+- [x] 搜索推文
+- [ ] 点赞、我的点赞
+- [ ] 条件搜索
+- [ ] 下拉加载更多
+- [ ] 修改头像、用户名、密码
+- [ ] 推文内容分析
+- [ ] 情绪模型
+- [ ] 性格模型
+- [ ] 匹配好友
+- [ ] 用户简介页
+- [ ] 取消好友关系
+- [ ] 消息通知
+- [ ] 推文权限设置
+- [ ] 本地化

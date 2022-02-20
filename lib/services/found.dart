@@ -39,12 +39,17 @@ class FoundCubit extends Cubit<FoundState> {
   final AuthenticationRepository _authRepo;
 
   Future<void> loadFoundPosts({
+    String? keyword,
     required OrderBy orderBy,
   }) async {
     final userId = _authRepo.userId();
     try {
-      emit(FoundLoading(posts: state.posts));
-      final posts = await _postRepo.fetchFoundPosts(userId, orderBy: orderBy);
+      emit(FoundLoading(
+          posts: keyword == null
+              ? state.posts
+              : null)); // search need clear last result
+      final posts = await _postRepo.fetchFoundPosts(userId,
+          orderBy: orderBy, keyword: keyword);
       emit(FoundLoaded(posts: posts));
     } on PlatformException catch (err) {
       emit(FoundError(

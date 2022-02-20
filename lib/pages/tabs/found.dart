@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/empty.dart';
@@ -17,8 +18,6 @@ class FoundTabPage extends StatefulWidget {
 }
 
 class _FoundTabPageState extends State<FoundTabPage> {
-  final TextEditingController _searchController = TextEditingController();
-
   void _onShowFilterDialog() {
     showDialog(
       context: context,
@@ -29,9 +28,11 @@ class _FoundTabPageState extends State<FoundTabPage> {
   }
 
   Future<void> _loadFoundPosts({
+    String? keyword,
     OrderBy orderBy = OrderBy.hot,
   }) async {
-    BlocProvider.of<FoundCubit>(context).loadFoundPosts(orderBy: orderBy);
+    BlocProvider.of<FoundCubit>(context)
+        .loadFoundPosts(orderBy: orderBy, keyword: keyword);
   }
 
   @override
@@ -50,7 +51,13 @@ class _FoundTabPageState extends State<FoundTabPage> {
             children: [
               Expanded(
                 child: TextField(
-                  controller: _searchController,
+                  onChanged: (value) {
+                    EasyDebounce.debounce(
+                      'search-keyword',
+                      const Duration(milliseconds: 300),
+                      () => _loadFoundPosts(keyword: value),
+                    );
+                  },
                   decoration: const InputDecoration(
                     filled: true,
                     floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -79,7 +86,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
             onRefresh: _loadFoundPosts,
             child: BlocConsumer<FoundCubit, FoundState>(
               listener: (context, state) {
-                if (state is FoundError && state.posts != null) {
+                if (state is FoundError) {
                   context.showErrorSnackbar(state.message);
                 }
               },
@@ -87,9 +94,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                 final posts = state.posts;
                 if (posts != null) {
                   if (posts.isEmpty) {
-                    return const EmptyFiller(
-                        tips:
-                            'If you publish a post now, it will be the first treehole post in the world!!!');
+                    return const EmptyFiller(tips: 'No posts for now...');
                   } else {
                     return ListView(
                       children: withDivider(posts
