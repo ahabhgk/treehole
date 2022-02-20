@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/landing.dart';
 import 'package:treehole/pages/my_posts.dart';
@@ -164,6 +165,11 @@ class MyApp extends StatelessWidget {
           case MyPostsPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const MyPostsPage(),
+              settings: settings,
+            );
+          case MyPalsPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) => const MyPalsPage(),
               settings: settings,
             );
           case LoginPage.route:

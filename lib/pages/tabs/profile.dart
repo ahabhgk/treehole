@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
@@ -87,7 +88,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                                   name: 'Pals',
                                   onTap: () {
                                     Navigator.of(context)
-                                        .pushNamed(MyPostsPage.route);
+                                        .pushNamed(MyPalsPage.route);
                                   },
                                 ),
                                 PairText(
