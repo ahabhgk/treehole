@@ -4,7 +4,9 @@ import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/components/retry.dart';
-import 'package:treehole/services/my_posts.dart';
+import 'package:treehole/models/post.dart';
+import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/post.dart';
 import 'package:treehole/utils/ui.dart';
 
 class MyPostsPage extends StatefulWidget {
@@ -17,6 +19,8 @@ class MyPostsPage extends StatefulWidget {
 }
 
 class _MyPostsPageState extends State<MyPostsPage> {
+  late Future<List<Post>> _posts;
+
   @override
   void initState() {
     super.initState();
@@ -24,51 +28,50 @@ class _MyPostsPageState extends State<MyPostsPage> {
   }
 
   void _loadMyPosts() {
-    BlocProvider.of<MyPostsCubit>(context).loadMyPosts();
+    final id =
+        RepositoryProvider.of<AuthenticationRepository>(context).userId();
+    _posts =
+        RepositoryProvider.of<PostRepository>(context).fetchPostsByAuthorId(id);
   }
 
-  Widget _buildPosts(MyPostsState state) {
-    if (state is MyPostsLoading) {
-      return const Loading();
-    } else if (state is MyPostsLoaded) {
-      final posts = state.posts
-          .map((post) => PostWidget(
-                username: post.username,
-                avatarUrl: post.avatarUrl,
-                content: post.content,
-                likes: 100,
-                createdAt: post.createdAt,
-              ))
-          .toList();
-      return ListView(children: withDivider(posts));
-    } else if (state is MyPostsLoadError) {
-      return Retry(onRetry: _loadMyPosts);
-    } else {
-      throw Exception('Panic: unreachable');
-    }
+  Widget _buildPosts() {
+    return FutureBuilder<List<Post>>(
+      future: _posts,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final pals = snapshot.data!
+              .map((post) => PostWidget(
+                    username: post.username,
+                    avatarUrl: post.avatarUrl,
+                    content: post.content,
+                    likes: 100,
+                    createdAt: post.createdAt,
+                  ))
+              .toList();
+          return ListView(children: withDivider(pals));
+        } else if (snapshot.hasError) {
+          return Retry(onRetry: _loadMyPosts);
+        } else {
+          return const Loading();
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<MyPostsCubit, MyPostsState>(
-      listener: (context, state) {
-        if (state is MyPostsLoadError) {
-          context.showErrorSnackbar(state.message);
-        }
-      },
-      builder: (context, state) => Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              const Header(
-                child: Text(
-                  'My Posts',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Header(
+              child: Text(
+                'My Posts',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              Expanded(child: _buildPosts(state)),
-            ],
-          ),
+            ),
+            Expanded(child: _buildPosts()),
+          ],
         ),
       ),
     );

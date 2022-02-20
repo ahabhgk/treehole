@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/components/empty.dart';
 import 'package:treehole/components/header.dart';
+import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
+import 'package:treehole/components/retry.dart';
+import 'package:treehole/repositories/post.dart';
+import 'package:treehole/services/found.dart';
+import 'package:treehole/utils/ui.dart';
 
 class FoundTabPage extends StatefulWidget {
   const FoundTabPage({Key? key}) : super(key: key);
@@ -19,6 +26,18 @@ class _FoundTabPageState extends State<FoundTabPage> {
         return const FilterDialog();
       },
     );
+  }
+
+  Future<void> _loadFoundPosts({
+    OrderBy orderBy = OrderBy.hot,
+  }) async {
+    BlocProvider.of<FoundCubit>(context).loadFoundPosts(orderBy: orderBy);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFoundPosts();
   }
 
   @override
@@ -56,47 +75,48 @@ class _FoundTabPageState extends State<FoundTabPage> {
           ),
         ),
         Expanded(
-          child: ListView(
-            children: [
-              PostWidget(
-                username: 'ahahbahahha',
-                avatarUrl:
-                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
-                content:
-                    'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhah',
-                likes: 100,
-                createdAt: DateTime.parse('2012-02-27 13:27:00'),
-              ),
-              PostWidget(
-                username: 'ahahbahahha',
-                avatarUrl:
-                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
-                content:
-                    'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhaha',
-                likes: 100,
-                createdAt: DateTime.parse('2012-02-27 13:27:00'),
-              ),
-              PostWidget(
-                username: 'ahahbahahha',
-                avatarUrl:
-                    'https://www.meme-arsenal.com/memes/328f21c1cf3de885a0a805b90ed5a02b.jpg',
-                content:
-                    'hahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahhahahhahahahahahhahh',
-                likes: 100,
-                createdAt: DateTime.parse('2012-02-27 13:27:00'),
-              ),
-            ],
+          child: RefreshIndicator(
+            onRefresh: _loadFoundPosts,
+            child: BlocConsumer<FoundCubit, FoundState>(
+              listener: (context, state) {
+                if (state is FoundError && state.posts != null) {
+                  context.showErrorSnackbar(state.message);
+                }
+              },
+              builder: (context, state) {
+                final posts = state.posts;
+                if (posts != null) {
+                  if (posts.isEmpty) {
+                    return const EmptyFiller(
+                        tips:
+                            'If you publish a post now, it will be the first treehole post in the world!!!');
+                  } else {
+                    return ListView(
+                      children: withDivider(posts
+                          .map((post) => PostWidget(
+                                username: post.username,
+                                avatarUrl: post.avatarUrl,
+                                content: post.content,
+                                likes: 100,
+                                createdAt: post.createdAt,
+                              ))
+                          .toList()),
+                    );
+                  }
+                } else if (state is FoundError) {
+                  return Retry(onRetry: _loadFoundPosts);
+                } else if (state is FoundLoading) {
+                  return const Loading();
+                } else {
+                  throw Exception('Panic: unreachable.');
+                }
+              },
+            ),
           ),
         ),
       ],
     );
   }
-}
-
-enum OrderBy {
-  suitability,
-  hot,
-  time,
 }
 
 class FilterDialog extends StatefulWidget {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/pal.dart';
-import 'package:treehole/components/post.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/models/profile.dart';
 import 'package:treehole/repositories/authentication.dart';
@@ -54,25 +53,6 @@ class _MyPalsPageState extends State<MyPalsPage> {
         }
       },
     );
-
-    // if (state is MyPostsLoading) {
-    //   return const Loading();
-    // } else if (state is MyPostsLoaded) {
-    //   final posts = state.posts
-    //       .map((post) => PostWidget(
-    //             username: post.username,
-    //             avatarUrl: post.avatarUrl,
-    //             content: post.content,
-    //             likes: 100,
-    //             createdAt: post.createdAt,
-    //           ))
-    //       .toList();
-    //   return ListView(children: withDivider(posts));
-    // } else if (state is MyPostsLoadError) {
-    //   return Retry(onRetry: _loadMyPosts);
-    // } else {
-    //   throw Exception('Panic: unreachable');
-    // }
   }
 
   @override

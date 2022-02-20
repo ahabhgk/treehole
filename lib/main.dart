@@ -16,7 +16,7 @@ import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/feed.dart';
-import 'package:treehole/services/my_posts.dart';
+import 'package:treehole/services/found.dart';
 import 'package:treehole/services/publish_post.dart';
 import 'package:treehole/services/user.dart';
 
@@ -80,13 +80,6 @@ class MyApp extends StatelessWidget {
               postRepo: RepositoryProvider.of<PostRepository>(context),
             ),
           ),
-          BlocProvider<MyPostsCubit>(
-            create: (context) => MyPostsCubit(
-              authRepo:
-                  RepositoryProvider.of<AuthenticationRepository>(context),
-              postRepo: RepositoryProvider.of<PostRepository>(context),
-            ),
-          ),
           BlocProvider<CountsCubit>(
             create: (context) => CountsCubit(
               authRepo:
@@ -97,6 +90,13 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<FeedCubit>(
             create: (context) => FeedCubit(
+              authRepo:
+                  RepositoryProvider.of<AuthenticationRepository>(context),
+              postRepo: RepositoryProvider.of<PostRepository>(context),
+            ),
+          ),
+          BlocProvider<FoundCubit>(
+            create: (context) => FoundCubit(
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),

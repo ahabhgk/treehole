@@ -68,4 +68,33 @@ class PostRepository {
           code: 'fetch feed posts error', message: res.error?.message);
     }
   }
+
+  Future<List<Post>> fetchFoundPosts(
+    String id, {
+    required OrderBy orderBy,
+  }) async {
+    var builder = _supabaseClient
+        .from('posts')
+        .select('*, profiles(username, avatar_url)')
+        .order('created_at', ascending: false);
+    if (orderBy == OrderBy.hot) {
+      // TODO add likes table
+      // builder.order('column');
+    }
+    final res = await builder.execute();
+    if (res.data != null && res.error == null) {
+      return (res.data as List<dynamic>)
+          .map((e) => Post.fromJson({...e, ...e['profiles']}))
+          .toList();
+    } else {
+      throw PlatformException(
+          code: 'fetch feed posts error', message: res.error?.message);
+    }
+  }
+}
+
+enum OrderBy {
+  suitability,
+  hot,
+  time,
 }

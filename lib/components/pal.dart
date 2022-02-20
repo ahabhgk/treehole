@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:treehole/utils/constants.dart';
-import 'package:treehole/utils/ui.dart';
 
 class PalWidget extends StatelessWidget {
   const PalWidget({
