@@ -103,6 +103,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                                 avatarUrl: post.avatarUrl,
                                 content: post.content,
                                 likes: 100,
+                                isLiked: false,
                                 createdAt: post.createdAt,
                               ))
                           .toList()),

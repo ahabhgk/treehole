@@ -76,7 +76,7 @@ class PostRepository {
   }) async {
     dynamic builder = _supabaseClient
         .from('posts')
-        .select('*, profiles(username, avatar_url)');
+        .select('*, profiles!posts_author_id_fkey(username, avatar_url)');
     if (keyword != null) {
       builder = builder.or('content.ilike.%$keyword%');
       // FIXME(upstream): https://github.com/supabase/supabase/blob/c097ad5538b311f2f2bf4f877987021e47d8ed4e/web/spec/dart.yml#L1237

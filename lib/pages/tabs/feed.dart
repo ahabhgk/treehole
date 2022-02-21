@@ -26,6 +26,14 @@ class _FeedTabPageState extends State<FeedTabPage> {
     _loadFeeds();
   }
 
+  Future<void> _onLikeTap() async {
+    BlocProvider.of<FeedCubit>(context).likePost();
+  }
+
+  Future<void> _onUnlikeTap() async {
+    BlocProvider.of<FeedCubit>(context).unlikePost();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -53,7 +61,10 @@ class _FeedTabPageState extends State<FeedTabPage> {
                                 avatarUrl: post.avatarUrl,
                                 content: post.content,
                                 likes: 100,
+                                isLiked: true,
                                 createdAt: post.createdAt,
+                                onLikeTap: _onLikeTap,
+                                onUnlikeTap: _onUnlikeTap,
                               ))
                           .toList()),
                     );

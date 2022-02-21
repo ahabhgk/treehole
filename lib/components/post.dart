@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/utils.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   const PostWidget({
     Key? key,
     this.username,
@@ -10,7 +10,10 @@ class PostWidget extends StatelessWidget {
     required this.createdAt,
     required this.content,
     required this.likes,
+    required this.isLiked,
     this.onAvatarTap,
+    this.onLikeTap,
+    this.onUnlikeTap,
   }) : super(key: key);
 
   final String? username;
@@ -18,7 +21,37 @@ class PostWidget extends StatelessWidget {
   final DateTime createdAt;
   final String content;
   final int likes;
+  final bool isLiked;
   final void Function()? onAvatarTap;
+  final Future<void> Function()? onLikeTap;
+  final Future<void> Function()? onUnlikeTap;
+
+  @override
+  _PostWidgetState createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  bool isLikeLoading = false;
+
+  void _onLikeTap() async {
+    setState(() {
+      isLikeLoading = true;
+    });
+    await widget.onLikeTap!();
+    setState(() {
+      isLikeLoading = true;
+    });
+  }
+
+  void _onUnlikeTap() async {
+    setState(() {
+      isLikeLoading = true;
+    });
+    await widget.onUnlikeTap!();
+    setState(() {
+      isLikeLoading = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +62,11 @@ class PostWidget extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                onTap: onAvatarTap,
+                onTap: widget.onAvatarTap,
                 child: CircleAvatar(
                   radius: 48 / 2,
-                  backgroundImage: (avatarUrl != null
-                      ? NetworkImage(avatarUrl!)
+                  backgroundImage: (widget.avatarUrl != null
+                      ? NetworkImage(widget.avatarUrl!)
                       : defaultAvatarImage) as ImageProvider<Object>,
                 ),
               ),
@@ -44,7 +77,7 @@ class PostWidget extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        username ?? 'anonymous',
+                        widget.username ?? 'anonymous',
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -53,7 +86,7 @@ class PostWidget extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        getDisplayTime(createdAt),
+                        getDisplayTime(widget.createdAt),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
@@ -67,7 +100,7 @@ class PostWidget extends StatelessWidget {
               const SizedBox(width: 48 + 12),
               Expanded(
                 child: Text(
-                  content,
+                  widget.content,
                   style: const TextStyle(fontSize: 16),
                 ),
               )
@@ -77,10 +110,17 @@ class PostWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () {},
+                onPressed: widget.isLiked
+                    ? widget.onUnlikeTap != null
+                        ? _onUnlikeTap
+                        : null
+                    : widget.onLikeTap != null
+                        ? _onLikeTap
+                        : null,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                icon: const Icon(Icons.favorite_border),
-                label: Text(likes.toString()),
+                icon: Icon(
+                    widget.isLiked ? Icons.favorite : Icons.favorite_border),
+                label: Text(widget.likes.toString()),
               )
             ],
           ),

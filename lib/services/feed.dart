@@ -56,4 +56,38 @@ class FeedCubit extends Cubit<FeedState> {
       ));
     }
   }
+
+  Future<void> likePost() async {
+    final userId = _authRepo.userId();
+    try {
+      // TODO
+    } on PlatformException catch (err) {
+      emit(FeedError(
+        message: err.message ?? 'Error like post.',
+        posts: state.posts,
+      ));
+    } catch (err) {
+      emit(FeedError(
+        message: 'Error like post.',
+        posts: state.posts,
+      ));
+    }
+  }
+
+  Future<void> unlikePost() async {
+    final userId = _authRepo.userId();
+    try {
+      // TODO
+    } on PlatformException catch (err) {
+      emit(FeedError(
+        message: err.message ?? 'Error unlike post.',
+        posts: state.posts,
+      ));
+    } catch (err) {
+      emit(FeedError(
+        message: 'Error unlike post.',
+        posts: state.posts,
+      ));
+    }
+  }
 }
