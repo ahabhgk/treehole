@@ -9,7 +9,7 @@ class PostWidget extends StatefulWidget {
     this.avatarUrl,
     required this.createdAt,
     required this.content,
-    required this.likes,
+    required this.likeCount,
     required this.isLiked,
     this.onAvatarTap,
     this.onLikeTap,
@@ -20,7 +20,7 @@ class PostWidget extends StatefulWidget {
   final String? avatarUrl;
   final DateTime createdAt;
   final String content;
-  final int likes;
+  final int likeCount;
   final bool isLiked;
   final void Function()? onAvatarTap;
   final Future<void> Function()? onLikeTap;
@@ -39,7 +39,7 @@ class _PostWidgetState extends State<PostWidget> {
     });
     await widget.onLikeTap!();
     setState(() {
-      isLikeLoading = true;
+      isLikeLoading = false;
     });
   }
 
@@ -49,7 +49,7 @@ class _PostWidgetState extends State<PostWidget> {
     });
     await widget.onUnlikeTap!();
     setState(() {
-      isLikeLoading = true;
+      isLikeLoading = false;
     });
   }
 
@@ -118,9 +118,12 @@ class _PostWidgetState extends State<PostWidget> {
                         ? _onLikeTap
                         : null,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                icon: Icon(
-                    widget.isLiked ? Icons.favorite : Icons.favorite_border),
-                label: Text(widget.likes.toString()),
+                icon: Icon(isLikeLoading
+                    ? Icons.data_usage_outlined
+                    : widget.isLiked
+                        ? Icons.favorite
+                        : Icons.favorite_border),
+                label: Text(widget.likeCount.toString()),
               )
             ],
           ),

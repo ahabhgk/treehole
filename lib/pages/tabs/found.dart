@@ -27,18 +27,33 @@ class _FoundTabPageState extends State<FoundTabPage> {
     );
   }
 
-  Future<void> _loadFoundPosts({
-    String? keyword,
+  Future<void> _search({
     OrderBy orderBy = OrderBy.hot,
   }) async {
-    BlocProvider.of<FoundCubit>(context)
-        .loadFoundPosts(orderBy: orderBy, keyword: keyword);
+    await BlocProvider.of<FoundCubit>(context).searchPosts(orderBy: orderBy);
+  }
+
+  void _setKeyword(String keyword) {
+    BlocProvider.of<FoundCubit>(context).setKeyword(keyword);
+  }
+
+  Future<void> _searchKeyword(String keyword) async {
+    _setKeyword(keyword);
+    await _search();
+  }
+
+  Future<void> _onLikeTap(String postId) async {
+    await BlocProvider.of<FoundCubit>(context).likePost(postId);
+  }
+
+  Future<void> _onUnlikeTap(String postId) async {
+    await BlocProvider.of<FoundCubit>(context).unlikePost(postId);
   }
 
   @override
   void initState() {
     super.initState();
-    _loadFoundPosts();
+    _search();
   }
 
   @override
@@ -46,77 +61,84 @@ class _FoundTabPageState extends State<FoundTabPage> {
     return Column(
       children: [
         Header(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: TextField(
-                  onChanged: (value) {
-                    EasyDebounce.debounce(
-                      'search-keyword',
-                      const Duration(milliseconds: 300),
-                      () => _loadFoundPosts(keyword: value),
-                    );
-                  },
-                  decoration: const InputDecoration(
-                    filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'Search',
-                    isDense: true,
-                    contentPadding: EdgeInsets.all(8),
+          child: BlocBuilder<FoundCubit, FoundState>(
+            builder: (context, state) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (value) {
+                      EasyDebounce.debounce(
+                        'search-keyword',
+                        const Duration(milliseconds: 300),
+                        () => _searchKeyword(value),
+                      );
+                    },
+                    initialValue: state.keyword,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      prefixIcon: Icon(Icons.search),
+                      labelText: 'Search',
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(8),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              InkWell(
-                onTap: _onShowFilterDialog,
-                child: const SizedBox(
-                  height: 36,
-                  width: 36,
-                  child: Icon(Icons.filter_alt_outlined),
+                const SizedBox(width: 12),
+                InkWell(
+                  onTap: _onShowFilterDialog,
+                  child: const SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: Icon(Icons.filter_alt_outlined),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: _loadFoundPosts,
-            child: BlocConsumer<FoundCubit, FoundState>(
-              listener: (context, state) {
-                if (state is FoundError) {
-                  context.showErrorSnackbar(state.message);
-                }
-              },
-              builder: (context, state) {
-                final posts = state.posts;
-                if (posts != null) {
-                  if (posts.isEmpty) {
-                    return const EmptyFiller(tips: 'No posts for now...');
-                  } else {
-                    return ListView(
-                      children: withDivider(posts
-                          .map((post) => PostWidget(
-                                username: post.username,
-                                avatarUrl: post.avatarUrl,
-                                content: post.content,
-                                likes: 100,
-                                isLiked: false,
-                                createdAt: post.createdAt,
-                              ))
-                          .toList()),
-                    );
+          child: BlocBuilder<FoundCubit, FoundState>(
+            builder: (context, state) => RefreshIndicator(
+              onRefresh: () => _searchKeyword(state.keyword),
+              child: BlocConsumer<FoundCubit, FoundState>(
+                listener: (context, state) {
+                  if (state is FoundError) {
+                    context.showErrorSnackbar(state.message);
                   }
-                } else if (state is FoundError) {
-                  return Retry(onRetry: _loadFoundPosts);
-                } else if (state is FoundLoading) {
-                  return const Loading();
-                } else {
-                  throw Exception('Panic: unreachable.');
-                }
-              },
+                },
+                builder: (context, state) {
+                  final posts = state.posts;
+                  if (posts != null) {
+                    if (posts.isEmpty) {
+                      return const EmptyFiller(tips: 'No posts for now...');
+                    } else {
+                      return ListView(
+                        children: withDivider(posts
+                            .map((post) => PostWidget(
+                                  username: post.username,
+                                  avatarUrl: post.avatarUrl,
+                                  content: post.content,
+                                  likeCount: post.likeCount,
+                                  isLiked: post.isLiked,
+                                  createdAt: post.createdAt,
+                                  onLikeTap: () => _onLikeTap(post.id),
+                                  onUnlikeTap: () => _onUnlikeTap(post.id),
+                                ))
+                            .toList()),
+                      );
+                    }
+                  } else if (state is FoundError) {
+                    return Retry(onRetry: _search);
+                  } else if (state is FoundLoading) {
+                    return const Loading();
+                  } else {
+                    throw Exception('Panic: unreachable.');
+                  }
+                },
+              ),
             ),
           ),
         ),

@@ -12,6 +12,7 @@ import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
+import 'package:treehole/repositories/like.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/services/counts.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _localStorage.deleteAll();
+    // _localStorage.deleteAll();
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthenticationRepository>(
@@ -60,6 +61,11 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<FollowRepository>(
           create: (context) => FollowRepository(
+            supabaseClient: _supabaseClient,
+          ),
+        ),
+        RepositoryProvider<LikeRepository>(
+          create: (context) => LikeRepository(
             supabaseClient: _supabaseClient,
           ),
         ),
@@ -93,6 +99,7 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
+              likeRepo: RepositoryProvider.of<LikeRepository>(context),
             ),
           ),
           BlocProvider<FoundCubit>(
@@ -100,6 +107,7 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
+              likeRepo: RepositoryProvider.of<LikeRepository>(context),
             ),
           ),
         ],

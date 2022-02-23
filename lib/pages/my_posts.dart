@@ -44,8 +44,8 @@ class _MyPostsPageState extends State<MyPostsPage> {
                     username: post.username,
                     avatarUrl: post.avatarUrl,
                     content: post.content,
-                    likes: 100,
-                    isLiked: false,
+                    likeCount: post.likeCount,
+                    isLiked: post.isLiked,
                     createdAt: post.createdAt,
                   ))
               .toList();

@@ -30,7 +30,7 @@ class PostRepository {
   Future<List<Post>> fetchPostsByAuthorId(String id) async {
     final res = await _supabaseClient
         .from('posts')
-        .select('*, profiles(username, avatar_url)')
+        .select('*, profiles!posts_author_id_fkey(username, avatar_url)')
         .eq('author_id', id)
         .order('created_at', ascending: false)
         .execute();
@@ -69,34 +69,24 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchFoundPosts(
+  Future<List<Post>> searchPosts(
     String id, {
-    String? keyword,
+    required String keyword,
     required OrderBy orderBy,
   }) async {
-    dynamic builder = _supabaseClient
-        .from('posts')
-        .select('*, profiles!posts_author_id_fkey(username, avatar_url)');
-    if (keyword != null) {
-      builder = builder.or('content.ilike.%$keyword%');
-      // FIXME(upstream): https://github.com/supabase/supabase/blob/c097ad5538b311f2f2bf4f877987021e47d8ed4e/web/spec/dart.yml#L1237
-      // .or('username.ilike.%$keyword%', foreignTable: 'profiles');
-    }
-    if (orderBy == OrderBy.hot) {
-      // TODO add likes table
-      // builder = builder.order('column');
-    } else if (orderBy == OrderBy.suitability) {
-      // TODO add likes table
-      // builder = builder.order('column');
-    } else if (orderBy == OrderBy.time) {
-      builder = builder.order('created_at', ascending: false);
-    }
-    final PostgrestResponse<dynamic> res = await builder.execute();
+    final PostgrestResponse res = await _supabaseClient.rpc('search_posts',
+        params: {'user_id': id, 'keyword': keyword}).execute();
+    // if (orderBy == OrderBy.hot) {
+    //   // TODO add likes table
+    //   // builder = builder.order('column');
+    // } else if (orderBy == OrderBy.suitability) {
+    //   // TODO add likes table
+    //   // builder = builder.order('column');
+    // } else if (orderBy == OrderBy.time) {
+    //   builder = builder.order('created_at', ascending: false);
+    // }
     if (res.data != null && res.error == null) {
-      return (res.data as List<dynamic>).map((e) {
-        final p = Post.fromJson({...e, ...e['profiles']});
-        return p;
-      }).toList();
+      return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
     } else {
       throw PlatformException(
           code: 'fetch feed posts error', message: res.error?.message);

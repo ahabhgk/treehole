@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/empty.dart';
@@ -26,12 +28,12 @@ class _FeedTabPageState extends State<FeedTabPage> {
     _loadFeeds();
   }
 
-  Future<void> _onLikeTap() async {
-    BlocProvider.of<FeedCubit>(context).likePost();
+  Future<void> _onLikeTap(String postId) async {
+    await BlocProvider.of<FeedCubit>(context).likePost(postId);
   }
 
-  Future<void> _onUnlikeTap() async {
-    BlocProvider.of<FeedCubit>(context).unlikePost();
+  Future<void> _onUnlikeTap(String postId) async {
+    await BlocProvider.of<FeedCubit>(context).unlikePost(postId);
   }
 
   @override
@@ -60,11 +62,11 @@ class _FeedTabPageState extends State<FeedTabPage> {
                                 username: post.username,
                                 avatarUrl: post.avatarUrl,
                                 content: post.content,
-                                likes: 100,
-                                isLiked: true,
+                                likeCount: post.likeCount,
+                                isLiked: post.isLiked,
                                 createdAt: post.createdAt,
-                                onLikeTap: _onLikeTap,
-                                onUnlikeTap: _onUnlikeTap,
+                                onLikeTap: () => _onLikeTap(post.id),
+                                onUnlikeTap: () => _onUnlikeTap(post.id),
                               ))
                           .toList()),
                     );

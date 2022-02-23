@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/like.dart';
 import 'package:treehole/repositories/post.dart';
 
 abstract class FeedState {
@@ -31,12 +32,15 @@ class FeedCubit extends Cubit<FeedState> {
   FeedCubit({
     required PostRepository postRepo,
     required AuthenticationRepository authRepo,
+    required LikeRepository likeRepo,
   })  : _postRepo = postRepo,
         _authRepo = authRepo,
+        _likeRepo = likeRepo,
         super(FeedLoading());
 
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
+  final LikeRepository _likeRepo;
 
   Future<void> loadFeeds() async {
     final userId = _authRepo.userId();
@@ -57,10 +61,24 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  Future<void> likePost() async {
+  Future<void> likePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      // TODO
+      await _likeRepo.likePost(userId: userId, postId: postId);
+      emit(FeedLoaded(
+        posts: state.posts!
+            .map((e) => Post(
+                  id: e.id,
+                  content: e.content,
+                  createdAt: e.createdAt,
+                  likeCount: e.id == postId ? e.likeCount + 1 : e.likeCount,
+                  isLiked: e.id == postId ? true : e.isLiked,
+                  username: e.username,
+                  authorId: e.authorId,
+                  avatarUrl: e.avatarUrl,
+                ))
+            .toList(),
+      ));
     } on PlatformException catch (err) {
       emit(FeedError(
         message: err.message ?? 'Error like post.',
@@ -74,10 +92,24 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  Future<void> unlikePost() async {
+  Future<void> unlikePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      // TODO
+      await _likeRepo.unlikePost(userId: userId, postId: postId);
+      emit(FeedLoaded(
+        posts: state.posts!
+            .map((e) => Post(
+                  id: e.id,
+                  content: e.content,
+                  createdAt: e.createdAt,
+                  likeCount: e.id == postId ? e.likeCount - 1 : e.likeCount,
+                  isLiked: e.id == postId ? false : e.isLiked,
+                  username: e.username,
+                  authorId: e.authorId,
+                  avatarUrl: e.avatarUrl,
+                ))
+            .toList(),
+      ));
     } on PlatformException catch (err) {
       emit(FeedError(
         message: err.message ?? 'Error unlike post.',
