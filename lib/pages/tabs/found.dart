@@ -8,6 +8,7 @@ import 'package:treehole/components/post.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/services/found.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class FoundTabPage extends StatefulWidget {
@@ -18,6 +19,8 @@ class FoundTabPage extends StatefulWidget {
 }
 
 class _FoundTabPageState extends State<FoundTabPage> {
+  final ScrollController _controller = ScrollController();
+
   void _onShowFilterDialog() {
     showDialog(
       context: context,
@@ -27,19 +30,8 @@ class _FoundTabPageState extends State<FoundTabPage> {
     );
   }
 
-  Future<void> _search({
-    OrderBy orderBy = OrderBy.hot,
-  }) async {
-    await BlocProvider.of<FoundCubit>(context).searchPosts(orderBy: orderBy);
-  }
-
-  void _setKeyword(String keyword) {
-    BlocProvider.of<FoundCubit>(context).setKeyword(keyword);
-  }
-
-  Future<void> _searchKeyword(String keyword) async {
-    _setKeyword(keyword);
-    await _search();
+  Future<void> _search({String? keyword}) async {
+    await BlocProvider.of<FoundCubit>(context).searchPosts(keyword);
   }
 
   Future<void> _onLikeTap(String postId) async {
@@ -50,10 +42,20 @@ class _FoundTabPageState extends State<FoundTabPage> {
     await BlocProvider.of<FoundCubit>(context).unlikePost(postId);
   }
 
+  void _loadMore() async {
+    await BlocProvider.of<FoundCubit>(context).searchMorePosts();
+  }
+
   @override
   void initState() {
     super.initState();
     _search();
+    _controller.addListener(() {
+      if (_controller.position.pixels >
+          _controller.position.maxScrollExtent - loadMoreDistance) {
+        _loadMore();
+      }
+    });
   }
 
   @override
@@ -71,7 +73,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                       EasyDebounce.debounce(
                         'search-keyword',
                         const Duration(milliseconds: 300),
-                        () => _searchKeyword(value),
+                        () => _search(keyword: value),
                       );
                     },
                     initialValue: state.keyword,
@@ -89,10 +91,13 @@ class _FoundTabPageState extends State<FoundTabPage> {
                 const SizedBox(width: 12),
                 InkWell(
                   onTap: _onShowFilterDialog,
-                  child: const SizedBox(
+                  child: SizedBox(
                     height: 36,
                     width: 36,
-                    child: Icon(Icons.filter_alt_outlined),
+                    child: Icon(
+                      Icons.filter_alt_outlined,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
                   ),
                 ),
               ],
@@ -102,7 +107,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
         Expanded(
           child: BlocBuilder<FoundCubit, FoundState>(
             builder: (context, state) => RefreshIndicator(
-              onRefresh: () => _searchKeyword(state.keyword),
+              onRefresh: _search,
               child: BlocConsumer<FoundCubit, FoundState>(
                 listener: (context, state) {
                   if (state is FoundError) {
@@ -116,6 +121,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                       return const EmptyFiller(tips: 'No posts for now...');
                     } else {
                       return ListView(
+                        controller: _controller,
                         children: withDivider(posts
                             .map((post) => PostWidget(
                                   username: post.username,

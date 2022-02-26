@@ -8,6 +8,7 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/services/feed.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class FeedTabPage extends StatefulWidget {
@@ -18,14 +19,26 @@ class FeedTabPage extends StatefulWidget {
 }
 
 class _FeedTabPageState extends State<FeedTabPage> {
+  final ScrollController _controller = ScrollController();
+
   Future<void> _loadFeeds() async {
     BlocProvider.of<FeedCubit>(context).loadFeeds();
+  }
+
+  void _loadMore() async {
+    await BlocProvider.of<FeedCubit>(context).loadMoreFeeds();
   }
 
   @override
   void initState() {
     super.initState();
     _loadFeeds();
+    _controller.addListener(() {
+      if (_controller.position.pixels >
+          _controller.position.maxScrollExtent - loadMoreDistance) {
+        _loadMore();
+      }
+    });
   }
 
   Future<void> _onLikeTap(String postId) async {
@@ -57,6 +70,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
                     return const EmptyFiller(tips: 'Go find more!');
                   } else {
                     return ListView(
+                      controller: _controller,
                       children: withDivider(posts
                           .map((post) => PostWidget(
                                 username: post.username,

@@ -27,9 +27,9 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchPostsByAuthorId(String id) async {
+  Future<List<Post>> fetchPostsByAuthorId(String id, int page) async {
     final res = await _supabaseClient
-        .rpc('my_posts', params: {'user_id': id}).execute();
+        .rpc('my_posts', params: {'user_id': id, 'page': page}).execute();
     if (res.data != null && res.error == null) {
       return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
     } else {
@@ -52,9 +52,9 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchLikedPostsByUserId(String id) async {
+  Future<List<Post>> fetchLikedPostsByUserId(String id, int page) async {
     final res = await _supabaseClient
-        .rpc('my_liked_posts', params: {'user_id': id}).execute();
+        .rpc('my_liked_posts', params: {'user_id': id, 'page': page}).execute();
     if (res.data != null && res.error == null) {
       return (res.data as List<dynamic>)
           .map((e) => Post.fromJson({...e, 'is_liked': true}))
@@ -80,9 +80,9 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchFeedPosts(String id) async {
+  Future<List<Post>> fetchFeedPosts(String id, int page) async {
     final res = await _supabaseClient
-        .rpc('feed_posts', params: {'user_id': id}).execute();
+        .rpc('feed_posts', params: {'user_id': id, 'page': page}).execute();
     if (res.data != null && res.error == null) {
       return (res.data as List<dynamic>).map((e) => Post.fromJson(e)).toList();
     } else {
@@ -95,9 +95,14 @@ class PostRepository {
     String id, {
     required String keyword,
     required OrderBy orderBy,
+    required int page,
   }) async {
-    final PostgrestResponse res = await _supabaseClient.rpc('search_posts',
-        params: {'user_id': id, 'keyword': keyword}).execute();
+    final PostgrestResponse res =
+        await _supabaseClient.rpc('search_posts', params: {
+      'user_id': id,
+      'keyword': keyword,
+      'page': page,
+    }).execute();
     // if (orderBy == OrderBy.hot) {
     //   // TODO add likes table
     //   // builder = builder.order('column');

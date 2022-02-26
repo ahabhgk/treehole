@@ -41,6 +41,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // _localStorage.deleteAll();
+    return _buildProvider(
+      child: _buildView(),
+    );
+  }
+
+  Widget _buildProvider({required Widget child}) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthenticationRepository>(
@@ -104,12 +110,12 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ],
-        child: _buildView(context),
+        child: child,
       ),
     );
   }
 
-  Widget _buildView(BuildContext context) {
+  Widget _buildView() {
     return MaterialApp(
       title: 'treehole',
       debugShowCheckedModeBanner: false,
@@ -123,7 +129,7 @@ class MyApp extends StatelessWidget {
           onPrimary: Color(0xffffffff),
           onSecondary: Color(0xffffffff),
           onSurface: Color(0xff000000),
-          onBackground: Color(0xffffffff),
+          onBackground: Color.fromARGB(255, 60, 60, 60),
           onError: Color(0xffffffff),
           brightness: Brightness.light,
         ),
@@ -141,7 +147,7 @@ class MyApp extends StatelessWidget {
           onPrimary: Color(0xffffffff),
           onSecondary: Color(0xffffffff),
           onSurface: Color(0xff000000),
-          onBackground: Color(0xffffffff),
+          onBackground: Color.fromARGB(255, 220, 220, 220),
           onError: Color(0xffffffff),
           brightness: Brightness.light,
         ),

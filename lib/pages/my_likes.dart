@@ -7,6 +7,7 @@ import 'package:treehole/components/post.dart';
 import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/post.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class MyLikesPage extends StatefulWidget {
@@ -19,27 +20,50 @@ class MyLikesPage extends StatefulWidget {
 }
 
 class _MyLikesPageState extends State<MyLikesPage> {
+  final ScrollController _controller = ScrollController();
+  int _page = 0;
   List<Post>? _posts;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     _loadMyLikedPosts();
+    _controller.addListener(() {
+      if (_controller.position.pixels >
+              _controller.position.maxScrollExtent - loadMoreDistance &&
+          !_isLoadingMore) {
+        _loadMyLikedPosts();
+      }
+    });
   }
 
   void _loadMyLikedPosts() async {
+    setState(() {
+      _isLoadingMore = true;
+    });
     final id =
         RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
-      final posts = await RepositoryProvider.of<PostRepository>(context)
-          .fetchLikedPostsByUserId(id);
+      final morePosts = await RepositoryProvider.of<PostRepository>(context)
+          .fetchLikedPostsByUserId(id, _page);
+      final posts = (_posts ?? [])..addAll(morePosts);
+      final page = morePosts.isEmpty ? _page : _page + 1;
       setState(() {
         _posts = posts;
+        _page = page;
+        _isLoadingMore = false;
       });
     } on PlatformException catch (e) {
+      setState(() {
+        _isLoadingMore = false;
+      });
       context.showErrorSnackbar(e.message ?? 'Error fetch user liked posts');
     } catch (e) {
       context.showErrorSnackbar('Error fetch user liked posts');
+      setState(() {
+        _isLoadingMore = false;
+      });
     }
   }
 
@@ -101,6 +125,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
     final posts = _posts;
     if (posts != null) {
       return ListView(
+        controller: _controller,
         children: withDivider(posts
             .map((post) => PostWidget(
                   username: post.username,
