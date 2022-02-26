@@ -54,8 +54,13 @@ class CountsCubit extends Cubit<CountsState> {
       final counts = await Future.wait([
         _postRepo.fetchPostsCountByAuthorId(id),
         _followRepo.fetchPalsCountByUserId(id),
+        _postRepo.fetchLikedPostsCountByUserId(id),
       ]);
-      emit(state.update(postsCount: counts[0], palsCount: counts[1]));
+      emit(state.update(
+        postsCount: counts[0],
+        palsCount: counts[1],
+        likesCount: counts[2],
+      ));
     } on PlatformException catch (err) {
       emit(CountsError(message: err.message ?? 'Get counts error.'));
     } catch (err) {

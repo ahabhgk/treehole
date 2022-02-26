@@ -119,7 +119,7 @@ class _PostWidgetState extends State<PostWidget> {
                         : null,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 icon: Icon(isLikeLoading
-                    ? Icons.data_usage_outlined
+                    ? Icons.change_circle_outlined
                     : widget.isLiked
                         ? Icons.favorite
                         : Icons.favorite_border),

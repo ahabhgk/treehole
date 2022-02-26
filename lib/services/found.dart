@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/like.dart';
 import 'package:treehole/repositories/post.dart';
 
 abstract class FoundState {
@@ -57,15 +56,12 @@ class FoundCubit extends Cubit<FoundState> {
   FoundCubit({
     required PostRepository postRepo,
     required AuthenticationRepository authRepo,
-    required LikeRepository likeRepo,
   })  : _postRepo = postRepo,
         _authRepo = authRepo,
-        _likeRepo = likeRepo,
         super(FoundLoading(keyword: ''));
 
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
-  final LikeRepository _likeRepo;
 
   void setKeyword(String keyword) {
     emit(state.updateKeyword(keyword));
@@ -101,7 +97,7 @@ class FoundCubit extends Cubit<FoundState> {
   Future<void> likePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      await _likeRepo.likePost(userId: userId, postId: postId);
+      await _postRepo.likePost(userId: userId, postId: postId);
       emit(FoundLoaded(
         keyword: state.keyword,
         posts: state.posts!
@@ -135,7 +131,7 @@ class FoundCubit extends Cubit<FoundState> {
   Future<void> unlikePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      await _likeRepo.unlikePost(userId: userId, postId: postId);
+      await _postRepo.unlikePost(userId: userId, postId: postId);
       emit(FoundLoaded(
         keyword: state.keyword,
         posts: state.posts!

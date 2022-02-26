@@ -9,30 +9,30 @@ import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/utils/ui.dart';
 
-class MyPostsPage extends StatefulWidget {
-  const MyPostsPage({Key? key}) : super(key: key);
+class MyLikesPage extends StatefulWidget {
+  const MyLikesPage({Key? key}) : super(key: key);
 
-  static const String route = '/my_posts';
+  static const String route = '/my_likes';
 
   @override
-  _MyPostsPageState createState() => _MyPostsPageState();
+  _MyLikesPageState createState() => _MyLikesPageState();
 }
 
-class _MyPostsPageState extends State<MyPostsPage> {
+class _MyLikesPageState extends State<MyLikesPage> {
   List<Post>? _posts;
 
   @override
   void initState() {
     super.initState();
-    _loadMyPosts();
+    _loadMyLikedPosts();
   }
 
-  void _loadMyPosts() async {
+  void _loadMyLikedPosts() async {
     final id =
         RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
       final posts = await RepositoryProvider.of<PostRepository>(context)
-          .fetchPostsByAuthorId(id);
+          .fetchLikedPostsByUserId(id);
       setState(() {
         _posts = posts;
       });
@@ -127,7 +127,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
           children: [
             const Header(
               child: Text(
-                'My Posts',
+                'My Likes',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

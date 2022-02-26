@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/services/counts.dart';
@@ -74,25 +75,28 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                                 PairText(
                                   count: state.postsCount,
                                   name: 'Posts',
-                                  onTap: () {
-                                    Navigator.of(context)
+                                  onTap: () async {
+                                    await Navigator.of(context)
                                         .pushNamed(MyPostsPage.route);
+                                    _getCounts();
                                   },
                                 ),
                                 PairText(
                                   count: state.palsCount,
                                   name: 'Pals',
-                                  onTap: () {
-                                    Navigator.of(context)
+                                  onTap: () async {
+                                    await Navigator.of(context)
                                         .pushNamed(MyPalsPage.route);
+                                    _getCounts();
                                   },
                                 ),
                                 PairText(
                                   count: state.likesCount,
                                   name: 'Likes',
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .pushNamed(MyPostsPage.route);
+                                  onTap: () async {
+                                    await Navigator.of(context)
+                                        .pushNamed(MyLikesPage.route);
+                                    _getCounts();
                                   },
                                 ),
                               ],

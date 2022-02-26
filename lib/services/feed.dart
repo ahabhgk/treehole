@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/like.dart';
 import 'package:treehole/repositories/post.dart';
 
 abstract class FeedState {
@@ -32,15 +31,12 @@ class FeedCubit extends Cubit<FeedState> {
   FeedCubit({
     required PostRepository postRepo,
     required AuthenticationRepository authRepo,
-    required LikeRepository likeRepo,
   })  : _postRepo = postRepo,
         _authRepo = authRepo,
-        _likeRepo = likeRepo,
         super(FeedLoading());
 
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
-  final LikeRepository _likeRepo;
 
   Future<void> loadFeeds() async {
     final userId = _authRepo.userId();
@@ -64,7 +60,7 @@ class FeedCubit extends Cubit<FeedState> {
   Future<void> likePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      await _likeRepo.likePost(userId: userId, postId: postId);
+      await _postRepo.likePost(userId: userId, postId: postId);
       emit(FeedLoaded(
         posts: state.posts!
             .map((e) => Post(
@@ -95,7 +91,7 @@ class FeedCubit extends Cubit<FeedState> {
   Future<void> unlikePost(String postId) async {
     final userId = _authRepo.userId();
     try {
-      await _likeRepo.unlikePost(userId: userId, postId: postId);
+      await _postRepo.unlikePost(userId: userId, postId: postId);
       emit(FeedLoaded(
         posts: state.posts!
             .map((e) => Post(

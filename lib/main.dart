@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/landing.dart';
@@ -12,7 +13,6 @@ import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
-import 'package:treehole/repositories/like.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/services/counts.dart';
@@ -64,11 +64,6 @@ class MyApp extends StatelessWidget {
             supabaseClient: _supabaseClient,
           ),
         ),
-        RepositoryProvider<LikeRepository>(
-          create: (context) => LikeRepository(
-            supabaseClient: _supabaseClient,
-          ),
-        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -99,7 +94,6 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
-              likeRepo: RepositoryProvider.of<LikeRepository>(context),
             ),
           ),
           BlocProvider<FoundCubit>(
@@ -107,7 +101,6 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
-              likeRepo: RepositoryProvider.of<LikeRepository>(context),
             ),
           ),
         ],
@@ -178,6 +171,11 @@ class MyApp extends StatelessWidget {
           case MyPalsPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const MyPalsPage(),
+              settings: settings,
+            );
+          case MyLikesPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) => const MyLikesPage(),
               settings: settings,
             );
           case LoginPage.route:
