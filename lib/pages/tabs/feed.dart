@@ -6,9 +6,9 @@ import 'package:treehole/components/empty.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
+import 'package:treehole/components/pull_down.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/services/feed.dart';
-import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class FeedTabPage extends StatefulWidget {
@@ -19,26 +19,18 @@ class FeedTabPage extends StatefulWidget {
 }
 
 class _FeedTabPageState extends State<FeedTabPage> {
-  final ScrollController _controller = ScrollController();
-
-  Future<void> _loadFeeds() async {
-    BlocProvider.of<FeedCubit>(context).loadFeeds();
+  Future<void> _loadFeeds() {
+    return BlocProvider.of<FeedCubit>(context).loadFeeds();
   }
 
-  void _loadMore() async {
-    await BlocProvider.of<FeedCubit>(context).loadMoreFeeds();
+  Future<void> _loadMore() {
+    return BlocProvider.of<FeedCubit>(context).loadMoreFeeds();
   }
 
   @override
   void initState() {
     super.initState();
     _loadFeeds();
-    _controller.addListener(() {
-      if (_controller.position.pixels >
-          _controller.position.maxScrollExtent - loadMoreDistance) {
-        _loadMore();
-      }
-    });
   }
 
   Future<void> _onLikeTap(String postId) async {
@@ -69,9 +61,9 @@ class _FeedTabPageState extends State<FeedTabPage> {
                   if (posts.isEmpty) {
                     return const EmptyFiller(tips: 'Go find more!');
                   } else {
-                    return ListView(
-                      controller: _controller,
-                      children: withDivider(posts
+                    return PullDown(
+                      onLoadMore: _loadMore,
+                      items: posts
                           .map((post) => PostWidget(
                                 username: post.username,
                                 avatarUrl: post.avatarUrl,
@@ -82,7 +74,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
                                 onLikeTap: () => _onLikeTap(post.id),
                                 onUnlikeTap: () => _onUnlikeTap(post.id),
                               ))
-                          .toList()),
+                          .toList(),
                     );
                   }
                 } else if (state is FeedError) {

@@ -5,10 +5,10 @@ import 'package:treehole/components/empty.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
+import 'package:treehole/components/pull_down.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/services/found.dart';
-import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class FoundTabPage extends StatefulWidget {
@@ -19,8 +19,6 @@ class FoundTabPage extends StatefulWidget {
 }
 
 class _FoundTabPageState extends State<FoundTabPage> {
-  final ScrollController _controller = ScrollController();
-
   void _onShowFilterDialog() {
     showDialog(
       context: context,
@@ -42,20 +40,14 @@ class _FoundTabPageState extends State<FoundTabPage> {
     await BlocProvider.of<FoundCubit>(context).unlikePost(postId);
   }
 
-  void _loadMore() async {
-    await BlocProvider.of<FoundCubit>(context).searchMorePosts();
+  Future<void> _loadMore() {
+    return BlocProvider.of<FoundCubit>(context).searchMorePosts();
   }
 
   @override
   void initState() {
     super.initState();
     _search();
-    _controller.addListener(() {
-      if (_controller.position.pixels >
-          _controller.position.maxScrollExtent - loadMoreDistance) {
-        _loadMore();
-      }
-    });
   }
 
   @override
@@ -120,9 +112,9 @@ class _FoundTabPageState extends State<FoundTabPage> {
                     if (posts.isEmpty) {
                       return const EmptyFiller(tips: 'No posts for now...');
                     } else {
-                      return ListView(
-                        controller: _controller,
-                        children: withDivider(posts
+                      return PullDown(
+                        onLoadMore: _loadMore,
+                        items: posts
                             .map((post) => PostWidget(
                                   username: post.username,
                                   avatarUrl: post.avatarUrl,
@@ -133,7 +125,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                                   onLikeTap: () => _onLikeTap(post.id),
                                   onUnlikeTap: () => _onUnlikeTap(post.id),
                                 ))
-                            .toList()),
+                            .toList(),
                       );
                     }
                   } else if (state is FoundError) {

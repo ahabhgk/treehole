@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
+import 'package:treehole/components/pull_down.dart';
 import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/post.dart';
-import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class MyPostsPage extends StatefulWidget {
@@ -20,28 +20,16 @@ class MyPostsPage extends StatefulWidget {
 }
 
 class _MyPostsPageState extends State<MyPostsPage> {
-  final ScrollController _controller = ScrollController();
   int _page = 0;
   List<Post>? _posts;
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     _loadMyPosts();
-    _controller.addListener(() {
-      if (_controller.position.pixels >
-              _controller.position.maxScrollExtent - loadMoreDistance &&
-          !_isLoadingMore) {
-        _loadMyPosts();
-      }
-    });
   }
 
   Future<void> _loadMyPosts() async {
-    setState(() {
-      _isLoadingMore = true;
-    });
     final id =
         RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
@@ -52,17 +40,10 @@ class _MyPostsPageState extends State<MyPostsPage> {
       setState(() {
         _posts = posts;
         _page = page;
-        _isLoadingMore = false;
       });
     } on PlatformException catch (e) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       context.showErrorSnackbar(e.message ?? 'Error fetch user liked posts');
     } catch (e) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       context.showErrorSnackbar('Error fetch user liked posts');
     }
   }
@@ -124,9 +105,9 @@ class _MyPostsPageState extends State<MyPostsPage> {
   Widget _buildPosts() {
     final posts = _posts;
     if (posts != null) {
-      return ListView(
-        controller: _controller,
-        children: withDivider(posts
+      return PullDown(
+        onLoadMore: _loadMyPosts,
+        items: posts
             .map((post) => PostWidget(
                   username: post.username,
                   avatarUrl: post.avatarUrl,
@@ -137,7 +118,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
                   onLikeTap: () => _onLikeTap(post.id),
                   onUnlikeTap: () => _onUnlikeTap(post.id),
                 ))
-            .toList()),
+            .toList(),
       );
     } else {
       return const Loading();
