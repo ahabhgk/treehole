@@ -19,7 +19,8 @@ class _AddPostPageState extends State<AddPostPage> {
 
   void _publish(BuildContext context, PublishPostState state) async {
     if (state is PublishPostDraft) {
-      BlocProvider.of<PublishPostCubit>(context).publishPost(state.content);
+      await BlocProvider.of<PublishPostCubit>(context)
+          .publishPost(state.content);
       Navigator.of(context).pop();
       context.showSnackbar('Publish post success.');
     } else if (state is PublishPostEmpty) {

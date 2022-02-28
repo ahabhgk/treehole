@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/models/emotion.dart';
 import 'package:treehole/models/post.dart';
 
 class PostRepository {
@@ -13,10 +16,12 @@ class PostRepository {
     required String authorId,
     required String content,
   }) async {
+    final emotion = await analyzePostEmotion(content);
     final res = await _supabaseClient.from('posts').insert([
       {
         'author_id': authorId,
         'content': content,
+        ...emotion.toJson(),
       },
     ]).execute();
     if (res.data != null && res.error == null) {
@@ -149,6 +154,18 @@ class PostRepository {
       throw PlatformException(
           code: 'like post error', message: res.error?.message);
     }
+  }
+
+  Future<Emotion> analyzePostEmotion(String content) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final rng = Random();
+    return Emotion(
+      joy: rng.nextDouble(),
+      mild: rng.nextDouble(),
+      disgust: rng.nextDouble(),
+      depressed: rng.nextDouble(),
+      anger: rng.nextDouble(),
+    );
   }
 }
 

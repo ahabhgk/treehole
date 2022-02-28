@@ -39,6 +39,7 @@ class _TabsPageState extends State<TabsPage> {
           ? FloatingActionButton(
               onPressed: () async {
                 await Navigator.pushNamed(context, AddPostPage.route);
+                print('refresh feed');
                 BlocProvider.of<FeedCubit>(context).loadFeeds();
               },
               child: const Icon(Icons.add),
