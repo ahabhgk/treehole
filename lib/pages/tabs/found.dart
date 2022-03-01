@@ -116,6 +116,7 @@ class _FoundTabPageState extends State<FoundTabPage> {
                         onLoadMore: _loadMore,
                         items: posts
                             .map((post) => PostWidget(
+                                  permission: post.permission,
                                   username: post.username,
                                   avatarUrl: post.avatarUrl,
                                   content: post.content,

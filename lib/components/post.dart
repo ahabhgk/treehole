@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:treehole/models/post.dart';
 import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/utils.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget({
     Key? key,
-    this.username,
-    this.avatarUrl,
+    required this.username,
     required this.createdAt,
     required this.content,
     required this.likeCount,
     required this.isLiked,
+    required this.permission,
+    this.avatarUrl,
     this.onAvatarTap,
     this.onLikeTap,
     this.onUnlikeTap,
   }) : super(key: key);
 
-  final String? username;
-  final String? avatarUrl;
+  final String username;
   final DateTime createdAt;
   final String content;
   final int likeCount;
   final bool isLiked;
+  final Permission permission;
+  final String? avatarUrl;
   final void Function()? onAvatarTap;
   final Future<void> Function()? onLikeTap;
   final Future<void> Function()? onUnlikeTap;
@@ -65,9 +68,11 @@ class _PostWidgetState extends State<PostWidget> {
                 onTap: widget.onAvatarTap,
                 child: CircleAvatar(
                   radius: 48 / 2,
-                  backgroundImage: (widget.avatarUrl != null
-                      ? NetworkImage(widget.avatarUrl!)
-                      : defaultAvatarImage) as ImageProvider<Object>,
+                  backgroundImage: (isAnonymous(widget.permission)
+                      ? anonymousAvatarImage
+                      : widget.avatarUrl != null
+                          ? NetworkImage(widget.avatarUrl!)
+                          : defaultAvatarImage) as ImageProvider<Object>,
                 ),
               ),
               const SizedBox(width: 12),
@@ -77,7 +82,9 @@ class _PostWidgetState extends State<PostWidget> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        widget.username ?? 'anonymous',
+                        isAnonymous(widget.permission)
+                            ? 'anonymous'
+                            : widget.username,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

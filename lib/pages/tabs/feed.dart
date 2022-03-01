@@ -65,6 +65,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
                       onLoadMore: _loadMore,
                       items: posts
                           .map((post) => PostWidget(
+                                permission: post.permission,
                                 username: post.username,
                                 avatarUrl: post.avatarUrl,
                                 content: post.content,

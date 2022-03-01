@@ -109,6 +109,7 @@ class FeedCubit extends Cubit<FeedState> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList(),
       ));
@@ -143,6 +144,7 @@ class FeedCubit extends Cubit<FeedState> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList(),
       ));

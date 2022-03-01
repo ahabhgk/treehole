@@ -147,6 +147,7 @@ class FoundCubit extends Cubit<FoundState> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList(),
       ));
@@ -184,6 +185,7 @@ class FoundCubit extends Cubit<FoundState> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList(),
       ));

@@ -65,6 +65,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList();
       });
@@ -92,6 +93,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList();
       });
@@ -109,6 +111,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
         onLoadMore: _loadMyPosts,
         items: posts
             .map((post) => PostWidget(
+                  permission: post.permission,
                   username: post.username,
                   avatarUrl: post.avatarUrl,
                   content: post.content,

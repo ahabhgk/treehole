@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
+import 'package:treehole/models/post.dart';
 import 'package:treehole/services/publish_post.dart';
 import 'package:treehole/utils/ui.dart';
 import 'package:treehole/utils/validator.dart';
@@ -16,11 +17,12 @@ class AddPostPage extends StatefulWidget {
 
 class _AddPostPageState extends State<AddPostPage> {
   final _formKey = GlobalKey<FormState>();
+  Permission _permission = Permission.self;
 
   void _publish(BuildContext context, PublishPostState state) async {
     if (state is PublishPostDraft) {
       await BlocProvider.of<PublishPostCubit>(context)
-          .publishPost(state.content);
+          .publishPost(state.content, _permission);
       Navigator.of(context).pop();
       context.showSnackbar('Publish post success.');
     } else if (state is PublishPostEmpty) {
@@ -110,6 +112,48 @@ class _AddPostPageState extends State<AddPostPage> {
                       validator: Validator.postContent,
                     ),
                   ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Permission: '),
+                    DropdownButton(
+                      value: _permission,
+                      items: const [
+                        DropdownMenuItem(
+                          child: Text('Only for yourself'),
+                          value: Permission.self,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Anonymous for pals'),
+                          value: Permission.anonymousForPals,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('For pals'),
+                          value: Permission.pal,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Anonymous for anyone'),
+                          value: Permission.anonymousForAnyone,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('For anyone'),
+                          value: Permission.anyone,
+                        ),
+                      ],
+                      onChanged: (Permission? value) {
+                        if (value != null) {
+                          setState(() {
+                            _permission = value;
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],

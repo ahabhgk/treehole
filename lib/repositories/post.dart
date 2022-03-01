@@ -15,12 +15,14 @@ class PostRepository {
   Future<void> publishPost({
     required String authorId,
     required String content,
+    required Permission permission,
   }) async {
     final emotion = await analyzePostEmotion(content);
     final res = await _supabaseClient.from('posts').insert([
       {
         'author_id': authorId,
         'content': content,
+        'permission': permission.index,
         ...emotion.toJson(),
       },
     ]).execute();

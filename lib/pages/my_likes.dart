@@ -65,6 +65,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList();
       });
@@ -92,6 +93,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
                   username: e.username,
                   authorId: e.authorId,
                   avatarUrl: e.avatarUrl,
+                  permission: e.permission,
                 ))
             .toList();
       });
@@ -109,6 +111,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
         onLoadMore: _loadMyLikedPosts,
         items: posts
             .map((post) => PostWidget(
+                  permission: post.permission,
                   username: post.username,
                   avatarUrl: post.avatarUrl,
                   content: post.content,

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:treehole/models/post.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/post.dart';
 
@@ -32,11 +33,12 @@ class PublishPostCubit extends Cubit<PublishPostState> {
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
 
-  Future<void> publishPost(String content) async {
+  Future<void> publishPost(String content, Permission permission) async {
     final authorId = _authRepo.userId();
     try {
       emit(PublishPostPublishing());
-      await _postRepo.publishPost(authorId: authorId, content: content);
+      await _postRepo.publishPost(
+          authorId: authorId, content: content, permission: permission);
       emit(PublishPostEmpty());
     } on PlatformException catch (err) {
       emit(PublishPostError(message: err.message ?? 'Error publish post.'));
