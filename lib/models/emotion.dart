@@ -14,11 +14,11 @@ class Emotion {
   final double anger;
 
   Emotion.fromJson(Map<String, dynamic> json)
-      : joy = json['joy'],
-        mild = json['mild'],
-        disgust = json['disgust'],
-        depressed = json['depressed'],
-        anger = json['anger'];
+      : joy = json['joy'].toDouble(),
+        mild = json['mild'].toDouble(),
+        disgust = json['disgust'].toDouble(),
+        depressed = json['depressed'].toDouble(),
+        anger = json['anger'].toDouble();
 
   Map<String, dynamic> toJson() {
     return {
@@ -28,5 +28,35 @@ class Emotion {
       'depressed': depressed,
       'anger': anger,
     };
+  }
+
+  Emotion operator +(Emotion o) {
+    return Emotion(
+      joy: joy + o.joy,
+      mild: mild + o.mild,
+      disgust: disgust + o.disgust,
+      depressed: depressed + o.depressed,
+      anger: anger + o.anger,
+    );
+  }
+
+  Emotion operator /(int o) {
+    return Emotion(
+      joy: joy / o,
+      mild: mild / o,
+      disgust: disgust / o,
+      depressed: depressed / o,
+      anger: anger / o,
+    );
+  }
+
+  Emotion operator *(double o) {
+    return Emotion(
+      joy: joy * o,
+      mild: mild * o,
+      disgust: disgust * o,
+      depressed: depressed * o,
+      anger: anger * o,
+    );
   }
 }

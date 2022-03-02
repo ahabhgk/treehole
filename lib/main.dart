@@ -85,6 +85,7 @@ class MyApp extends StatelessWidget {
               authRepo:
                   RepositoryProvider.of<AuthenticationRepository>(context),
               postRepo: RepositoryProvider.of<PostRepository>(context),
+              profileRepo: RepositoryProvider.of<ProfileRepository>(context),
             ),
           ),
           BlocProvider<CountsCubit>(

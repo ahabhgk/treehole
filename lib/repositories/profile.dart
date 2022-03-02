@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/models/emotion.dart';
 import 'package:treehole/models/profile.dart';
 
 class ProfileRepository {
@@ -12,7 +13,7 @@ class ProfileRepository {
   Future<Profile> fetchUserProfile(String id) async {
     final res = await _supabaseClient
         .from('profiles')
-        .select()
+        .select('id, username, avatar_url')
         .eq('id', id)
         .single()
         .execute();
@@ -34,6 +35,42 @@ class ProfileRepository {
     } else {
       throw PlatformException(
           code: 'get user profile error', message: res.error?.message);
+    }
+  }
+
+  Future<Emotion> fetchUserEmotion(String userId) async {
+    final res = await _supabaseClient
+        .from('profiles')
+        .select('joy, mild, disgust, depressed, anger')
+        .eq('id', userId)
+        .single()
+        .execute();
+    if (res.data != null && res.error == null) {
+      return Emotion.fromJson(res.data);
+    } else {
+      throw PlatformException(
+          code: 'fetch user profile error', message: res.error?.message);
+    }
+  }
+
+  Future<void> updateUserEomtion(
+    String userId,
+    Emotion cur,
+    int postCount,
+  ) async {
+    final acc = await fetchUserEmotion(userId);
+    // acc * ((n - 1) / n) + cur / n
+    final emotion = acc * ((postCount - 1) / postCount) + cur / postCount;
+    final res = await _supabaseClient
+        .from('profiles')
+        .update(emotion.toJson())
+        .eq('id', userId)
+        .execute();
+    if (res.data != null && res.error == null) {
+      return;
+    } else {
+      throw PlatformException(
+          code: 'fetch user profile error', message: res.error?.message);
     }
   }
 }
