@@ -134,8 +134,9 @@ class _MyPostsPageState extends State<MyPostsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const Header(
-              child: Text(
+            Header(
+              goBack: () => Navigator.of(context).pop(),
+              child: const Text(
                 'My Posts',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),

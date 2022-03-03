@@ -134,8 +134,9 @@ class _MyLikesPageState extends State<MyLikesPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const Header(
-              child: Text(
+            Header(
+              goBack: () => Navigator.of(context).pop(),
+              child: const Text(
                 'My Likes',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
