@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/publish_post.dart';
@@ -120,7 +121,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'treehole',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        fontFamily: 'JBMono',
         colorScheme: const ColorScheme(
           primary: Color(0xFF388E3C),
           secondary: Color(0xFF26A69A),
@@ -138,7 +141,9 @@ class MyApp extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
       ),
-      darkTheme: ThemeData.dark().copyWith(
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        fontFamily: 'JBMono',
         colorScheme: const ColorScheme(
           primary: Color(0xFFBB86FC),
           secondary: Color(0xFF03DAC6),
@@ -150,7 +155,7 @@ class MyApp extends StatelessWidget {
           onSurface: Color(0xff000000),
           onBackground: Color.fromARGB(255, 220, 220, 220),
           onError: Color(0xffffffff),
-          brightness: Brightness.light,
+          brightness: Brightness.dark,
         ),
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
@@ -183,6 +188,11 @@ class MyApp extends StatelessWidget {
           case MyLikesPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const MyLikesPage(),
+              settings: settings,
+            );
+          case MatchPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) => const MatchPage(),
               settings: settings,
             );
           case LoginPage.route:

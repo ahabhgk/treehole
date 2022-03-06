@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:treehole/models/emotion.dart';
@@ -71,6 +73,20 @@ class ProfileRepository {
     } else {
       throw PlatformException(
           code: 'fetch user profile error', message: res.error?.message);
+    }
+  }
+
+  Future<Profile> fetchMatchedPal(String userId) async {
+    final res = await _supabaseClient
+        .rpc('match_pal', params: {'user_id': userId}).execute();
+    if (res.data != null && res.error == null) {
+      final index = Random().nextInt((res.data as List<dynamic>).length);
+      return Profile.fromJson(res.data[index]);
+    } else {
+      throw PlatformException(
+        code: 'fetch matched user profile error',
+        message: res.error?.message,
+      );
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/my_posts.dart';
@@ -110,28 +111,40 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               ),
               // page list
               const Divider(height: 2, indent: 12, endIndent: 12),
-              const SubPageListItem(
+              SubPageListItem(
                 icon: Icons.mood,
                 iconColor: Colors.deepPurple,
                 title: 'Mood',
+                onTap: () {
+                  Navigator.of(context).pushNamed(MatchPage.route);
+                },
               ),
               const Divider(height: 2, indent: 12, endIndent: 12),
-              const SubPageListItem(
+              SubPageListItem(
                 icon: Icons.list,
                 iconColor: Colors.blue,
                 title: 'Quality',
+                onTap: () {
+                  Navigator.of(context).pushNamed(MatchPage.route);
+                },
               ),
               const Divider(height: 2, indent: 12, endIndent: 12),
-              const SubPageListItem(
+              SubPageListItem(
                 icon: Icons.fiber_smart_record_outlined,
                 iconColor: Colors.deepOrange,
                 title: 'Match',
+                onTap: () {
+                  Navigator.of(context).pushNamed(MatchPage.route);
+                },
               ),
               const Divider(height: 2, indent: 12, endIndent: 12),
-              const SubPageListItem(
+              SubPageListItem(
                 icon: Icons.settings,
                 iconColor: Colors.blueGrey,
                 title: 'Settings',
+                onTap: () {
+                  Navigator.of(context).pushNamed(MatchPage.route);
+                },
               ),
             ],
           );
@@ -183,30 +196,37 @@ class SubPageListItem extends StatelessWidget {
     required this.icon,
     required this.iconColor,
     required this.title,
+    required this.onTap,
   }) : super(key: key);
 
   final IconData icon;
   final Color iconColor;
   final String title;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 30,
-            color: iconColor,
-          ),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: iconColor,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

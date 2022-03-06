@@ -5,7 +5,12 @@ import 'package:treehole/pages/tabs.dart';
 extension ShowSnackBar on BuildContext {
   /// Extention method to easily display snack bar.
   void showSnackbar(String text) {
-    ScaffoldMessenger.of(this).showSnackBar(SnackBar(content: Text(text)));
+    ScaffoldMessenger.of(this).showSnackBar(SnackBar(
+      content: Text(
+        text,
+        style: TextStyle(color: Theme.of(this).hintColor),
+      ),
+    ));
   }
 
   /// Extention method to easily display error snack bar.
