@@ -39,6 +39,7 @@ class CountsCubit extends Cubit<CountsState> {
     required PostRepository postRepo,
     required AuthenticationRepository authRepo,
     required FollowRepository followRepo,
+    this.userId,
   })  : _postRepo = postRepo,
         _authRepo = authRepo,
         _followRepo = followRepo,
@@ -47,9 +48,10 @@ class CountsCubit extends Cubit<CountsState> {
   final PostRepository _postRepo;
   final AuthenticationRepository _authRepo;
   final FollowRepository _followRepo;
+  final String? userId;
 
   Future<void> getCounts() async {
-    final id = _authRepo.userId();
+    final id = userId ?? _authRepo.userId();
     try {
       final counts = await Future.wait([
         _postRepo.fetchPostsCountByAuthorId(id),

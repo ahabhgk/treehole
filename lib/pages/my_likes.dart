@@ -6,14 +6,21 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/components/pull_down.dart';
 import 'package:treehole/models/post.dart';
-import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/utils/ui.dart';
 
-class MyLikesPage extends StatefulWidget {
-  const MyLikesPage({Key? key}) : super(key: key);
+Future<void> goMyLikesPage(BuildContext context, String userId) {
+  return Navigator.of(context).pushNamed(MyLikesPage.route, arguments: userId);
+}
 
-  static const String route = '/my_likes';
+class MyLikesPage extends StatefulWidget {
+  const MyLikesPage({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
+
+  static const String route = '/likes';
 
   @override
   _MyLikesPageState createState() => _MyLikesPageState();
@@ -30,11 +37,9 @@ class _MyLikesPageState extends State<MyLikesPage> {
   }
 
   Future<void> _loadMyLikedPosts() async {
-    final id =
-        RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
       final morePosts = await RepositoryProvider.of<PostRepository>(context)
-          .fetchLikedPostsByUserId(id, _page);
+          .fetchLikedPostsByUserId(widget.userId, _page);
       final posts = (_posts ?? [])..addAll(morePosts);
       final page = morePosts.isEmpty ? _page : _page + 1;
       setState(() {
@@ -49,11 +54,9 @@ class _MyLikesPageState extends State<MyLikesPage> {
   }
 
   Future<void> _onLikeTap(String postId) async {
-    final id =
-        RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
       await RepositoryProvider.of<PostRepository>(context)
-          .likePost(userId: id, postId: postId);
+          .likePost(userId: widget.userId, postId: postId);
       setState(() {
         _posts = _posts!
             .map((e) => Post(
@@ -77,11 +80,9 @@ class _MyLikesPageState extends State<MyLikesPage> {
   }
 
   Future<void> _onUnlikeTap(String postId) async {
-    final id =
-        RepositoryProvider.of<AuthenticationRepository>(context).userId();
     try {
       await RepositoryProvider.of<PostRepository>(context)
-          .unlikePost(userId: id, postId: postId);
+          .unlikePost(userId: widget.userId, postId: postId);
       setState(() {
         _posts = _posts!
             .map((e) => Post(
@@ -111,6 +112,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
         onLoadMore: _loadMyLikedPosts,
         items: posts
             .map((post) => PostWidget(
+                  authorId: post.authorId,
                   permission: post.permission,
                   username: post.username,
                   avatarUrl: post.avatarUrl,
@@ -120,6 +122,14 @@ class _MyLikesPageState extends State<MyLikesPage> {
                   createdAt: post.createdAt,
                   onLikeTap: () => _onLikeTap(post.id),
                   onUnlikeTap: () => _onUnlikeTap(post.id),
+                  onAvatarTap: () => goUserIntroductionPage(
+                    context,
+                    Profile(
+                      id: post.authorId,
+                      username: post.username,
+                      avatarUrl: post.avatarUrl,
+                    ),
+                  ),
                 ))
             .toList(),
       );
@@ -134,7 +144,7 @@ class _MyLikesPageState extends State<MyLikesPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const BackHeader(title: 'My Likes'),
+            const BackHeader(title: 'Likes'),
             Expanded(child: _buildPosts()),
           ],
         ),

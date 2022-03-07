@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/models/post.dart';
+import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/utils.dart';
+import 'package:treehole/utils/ui.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget({
     Key? key,
+    required this.authorId,
     required this.username,
     required this.createdAt,
     required this.content,
@@ -18,6 +22,7 @@ class PostWidget extends StatefulWidget {
     this.onUnlikeTap,
   }) : super(key: key);
 
+  final String authorId;
   final String username;
   final DateTime createdAt;
   final String content;
@@ -37,6 +42,10 @@ class _PostWidgetState extends State<PostWidget> {
   bool isLikeLoading = false;
 
   void _onLikeTap() async {
+    if (widget.authorId ==
+        RepositoryProvider.of<AuthenticationRepository>(context).userId()) {
+      context.showSnackbar('😅');
+    }
     setState(() {
       isLikeLoading = true;
     });
@@ -56,6 +65,14 @@ class _PostWidgetState extends State<PostWidget> {
     });
   }
 
+  void _onAvatarTap() {
+    if (widget.permission != Permission.anonymousForAnyone &&
+        widget.permission != Permission.anonymousForPals &&
+        widget.onAvatarTap != null) {
+      widget.onAvatarTap!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,7 +82,7 @@ class _PostWidgetState extends State<PostWidget> {
           Row(
             children: [
               GestureDetector(
-                onTap: widget.onAvatarTap,
+                onTap: _onAvatarTap,
                 child: CircleAvatar(
                   radius: 48 / 2,
                   backgroundImage: NetworkImage(isAnonymous(widget.permission)

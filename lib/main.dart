@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
@@ -184,17 +186,20 @@ class MyApp extends StatelessWidget {
             );
           case MyPostsPage.route:
             return MaterialPageRoute<void>(
-              builder: (context) => const MyPostsPage(),
+              builder: (context) =>
+                  MyPostsPage(userId: settings.arguments as String),
               settings: settings,
             );
           case MyPalsPage.route:
             return MaterialPageRoute<void>(
-              builder: (context) => const MyPalsPage(),
+              builder: (context) =>
+                  MyPalsPage(userId: settings.arguments as String),
               settings: settings,
             );
           case MyLikesPage.route:
             return MaterialPageRoute<void>(
-              builder: (context) => const MyLikesPage(),
+              builder: (context) =>
+                  MyLikesPage(userId: settings.arguments as String),
               settings: settings,
             );
           case MatchPage.route:
@@ -205,6 +210,24 @@ class MyApp extends StatelessWidget {
           case SettingsPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const SettingsPage(),
+              settings: settings,
+            );
+          case IntroductionPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) {
+                final profile = settings.arguments as Profile;
+                return BlocProvider<CountsCubit>(
+                  create: (context) => CountsCubit(
+                    authRepo: RepositoryProvider.of<AuthenticationRepository>(
+                        context),
+                    postRepo: RepositoryProvider.of<PostRepository>(context),
+                    followRepo:
+                        RepositoryProvider.of<FollowRepository>(context),
+                    userId: profile.id,
+                  ),
+                  child: IntroductionPage(profile: profile),
+                );
+              },
               settings: settings,
             );
           case LoginPage.route:

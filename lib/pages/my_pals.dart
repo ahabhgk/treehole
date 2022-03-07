@@ -5,14 +5,19 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/pal.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/models/profile.dart';
-import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/utils/ui.dart';
 
-class MyPalsPage extends StatefulWidget {
-  const MyPalsPage({Key? key}) : super(key: key);
+Future<void> goMyPalsPage(BuildContext context, String userId) {
+  return Navigator.of(context).pushNamed(MyPalsPage.route, arguments: userId);
+}
 
-  static const String route = '/my_pals';
+class MyPalsPage extends StatefulWidget {
+  const MyPalsPage({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
+
+  static const String route = '/pals';
 
   @override
   _MyPalsPageState createState() => _MyPalsPageState();
@@ -28,10 +33,8 @@ class _MyPalsPageState extends State<MyPalsPage> {
   }
 
   void _loadMyPals() {
-    final id =
-        RepositoryProvider.of<AuthenticationRepository>(context).userId();
     _pals = RepositoryProvider.of<FollowRepository>(context)
-        .fetchPalsProfileByUserId(id);
+        .fetchPalsProfileByUserId(widget.userId);
   }
 
   Widget _buildPals() {
@@ -61,7 +64,7 @@ class _MyPalsPageState extends State<MyPalsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const BackHeader(title: 'My Pals'),
+            const BackHeader(title: 'Pals'),
             Expanded(child: _buildPals()),
           ],
         ),

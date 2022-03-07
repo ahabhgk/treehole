@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
@@ -41,25 +43,45 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                     const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 102 / 2,
+                    GestureDetector(
+                      onTap: () => goUserIntroductionPage(
+                        context,
+                        Profile(
+                          id: state.profile.id,
+                          username: state.profile.username,
+                          avatarUrl: state.profile.avatarUrl,
+                        ),
+                      ),
                       child: CircleAvatar(
-                        radius: 96 / 2,
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        backgroundImage: NetworkImage(
-                            state.profile.avatarUrl ?? defaultAvatarUrl),
+                        radius: 102 / 2,
+                        child: CircleAvatar(
+                          radius: 96 / 2,
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          backgroundImage: NetworkImage(
+                              state.profile.avatarUrl ?? defaultAvatarUrl),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              state.profile.username,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                          GestureDetector(
+                            onTap: () => goUserIntroductionPage(
+                              context,
+                              Profile(
+                                id: state.profile.id,
+                                username: state.profile.username,
+                                avatarUrl: state.profile.avatarUrl,
+                              ),
+                            ),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                state.profile.username,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -69,34 +91,40 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                                 context.showErrorSnackbar(state.message);
                               }
                             },
-                            builder: (context, state) => Row(
+                            builder: (context, countsState) => Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 PairText(
-                                  count: state.postsCount,
+                                  count: countsState.postsCount,
                                   name: 'Posts',
                                   onTap: () async {
-                                    await Navigator.of(context)
-                                        .pushNamed(MyPostsPage.route);
+                                    await goMyPostsPage(
+                                      context,
+                                      state.profile.id,
+                                    );
                                     _getCounts();
                                   },
                                 ),
                                 PairText(
-                                  count: state.palsCount,
+                                  count: countsState.palsCount,
                                   name: 'Pals',
                                   onTap: () async {
-                                    await Navigator.of(context)
-                                        .pushNamed(MyPalsPage.route);
+                                    await goMyPalsPage(
+                                      context,
+                                      state.profile.id,
+                                    );
                                     _getCounts();
                                   },
                                 ),
                                 PairText(
-                                  count: state.likesCount,
+                                  count: countsState.likesCount,
                                   name: 'Likes',
                                   onTap: () async {
-                                    await Navigator.of(context)
-                                        .pushNamed(MyLikesPage.route);
+                                    await goMyLikesPage(
+                                      context,
+                                      state.profile.id,
+                                    );
                                     _getCounts();
                                   },
                                 ),
@@ -161,7 +189,7 @@ class PairText extends StatelessWidget {
     Key? key,
     this.count,
     required this.name,
-    required this.onTap,
+    this.onTap,
   }) : super(key: key);
 
   final int? count;

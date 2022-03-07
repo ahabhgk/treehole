@@ -8,6 +8,8 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/post.dart';
 import 'package:treehole/components/pull_down.dart';
 import 'package:treehole/components/retry.dart';
+import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/services/feed.dart';
 import 'package:treehole/utils/ui.dart';
 
@@ -65,6 +67,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
                       onLoadMore: _loadMore,
                       items: posts
                           .map((post) => PostWidget(
+                                authorId: post.authorId,
                                 permission: post.permission,
                                 username: post.username,
                                 avatarUrl: post.avatarUrl,
@@ -74,6 +77,14 @@ class _FeedTabPageState extends State<FeedTabPage> {
                                 createdAt: post.createdAt,
                                 onLikeTap: () => _onLikeTap(post.id),
                                 onUnlikeTap: () => _onUnlikeTap(post.id),
+                                onAvatarTap: () => goUserIntroductionPage(
+                                  context,
+                                  Profile(
+                                    id: post.authorId,
+                                    username: post.username,
+                                    avatarUrl: post.avatarUrl,
+                                  ),
+                                ),
                               ))
                           .toList(),
                     );
