@@ -23,9 +23,7 @@ class PalWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 36 / 2,
-              backgroundImage: (avatarUrl != null
-                  ? NetworkImage(avatarUrl!)
-                  : defaultAvatarImage) as ImageProvider<Object>,
+              backgroundImage: NetworkImage(avatarUrl ?? defaultAvatarUrl),
             ),
             const SizedBox(width: 12),
             Expanded(

@@ -39,6 +39,17 @@ class AuthenticationRepository {
     }
   }
 
+  Future<void> resetPassword(String password) async {
+    final res =
+        await _supabaseClient.auth.update(UserAttributes(password: password));
+    if (res.data != null && res.error == null) {
+      return;
+    } else {
+      throw PlatformException(
+          code: 'reset password error', message: res.error?.message);
+    }
+  }
+
   Future<String?> recoverSession() async {
     final session = await getSession();
     if (session != null) {

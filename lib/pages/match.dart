@@ -64,9 +64,8 @@ class _MatchPageState extends State<MatchPage> {
             child: CircleAvatar(
               radius: 96 / 2,
               backgroundColor: Theme.of(context).backgroundColor,
-              backgroundImage: (_pal?.avatarUrl != null
-                  ? NetworkImage(_pal!.avatarUrl!)
-                  : defaultAvatarImage) as ImageProvider<Object>,
+              backgroundImage:
+                  NetworkImage(_pal?.avatarUrl ?? defaultAvatarUrl),
             ),
           ),
           const SizedBox(height: 12),
@@ -85,7 +84,7 @@ class _MatchPageState extends State<MatchPage> {
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: _requestToBePal,
-                child: const Text('Request to be pal'),
+                child: const Text('Request to be pals'),
               ),
             ],
           ),
@@ -101,13 +100,7 @@ class _MatchPageState extends State<MatchPage> {
       body: SafeArea(
         child: Column(
           children: [
-            Header(
-              goBack: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Match Your Pal',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
+            const BackHeader(title: 'Match Your Pal'),
             Expanded(child: _buildMatchResult()),
           ],
         ),

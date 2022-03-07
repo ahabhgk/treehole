@@ -9,6 +9,7 @@ import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/publish_post.dart';
 import 'package:treehole/pages/landing.dart';
 import 'package:treehole/pages/my_posts.dart';
+import 'package:treehole/pages/settings.dart';
 import 'package:treehole/pages/tabs.dart';
 import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
@@ -16,6 +17,7 @@ import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
+import 'package:treehole/repositories/storage.dart';
 import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/feed.dart';
 import 'package:treehole/services/found.dart';
@@ -54,6 +56,11 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthenticationRepository(
             supabaseClient: _supabaseClient,
             localStorage: _localStorage,
+          ),
+        ),
+        RepositoryProvider<StorageRepository>(
+          create: (context) => StorageRepository(
+            supabaseClient: _supabaseClient,
           ),
         ),
         RepositoryProvider<ProfileRepository>(
@@ -193,6 +200,11 @@ class MyApp extends StatelessWidget {
           case MatchPage.route:
             return MaterialPageRoute<void>(
               builder: (context) => const MatchPage(),
+              settings: settings,
+            );
+          case SettingsPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) => const SettingsPage(),
               settings: settings,
             );
           case LoginPage.route:

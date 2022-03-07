@@ -51,6 +51,9 @@ class UserCubit extends Cubit<UserState> {
     final id = _authRepo.userId();
     final profile = Profile(id: id, username: username, avatarUrl: avatarUrl);
     await _profileRepo.saveUserProfile(profile);
+    if (state is UserLoaded) {
+      emit(UserLoaded(profile: profile));
+    }
   }
 
   Future<void> recover() async {

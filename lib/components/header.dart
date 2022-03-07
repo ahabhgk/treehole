@@ -37,3 +37,20 @@ class Header extends StatelessWidget {
     );
   }
 }
+
+class BackHeader extends StatelessWidget {
+  const BackHeader({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Header(
+      goBack: () => Navigator.of(context).pop(),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}

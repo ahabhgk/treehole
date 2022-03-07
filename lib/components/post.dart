@@ -68,11 +68,9 @@ class _PostWidgetState extends State<PostWidget> {
                 onTap: widget.onAvatarTap,
                 child: CircleAvatar(
                   radius: 48 / 2,
-                  backgroundImage: (isAnonymous(widget.permission)
-                      ? anonymousAvatarImage
-                      : widget.avatarUrl != null
-                          ? NetworkImage(widget.avatarUrl!)
-                          : defaultAvatarImage) as ImageProvider<Object>,
+                  backgroundImage: NetworkImage(isAnonymous(widget.permission)
+                      ? anonymousAvatarUrl
+                      : widget.avatarUrl ?? defaultAvatarUrl),
                 ),
               ),
               const SizedBox(width: 12),

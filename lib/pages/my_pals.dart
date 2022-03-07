@@ -61,13 +61,7 @@ class _MyPalsPageState extends State<MyPalsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            Header(
-              goBack: () => Navigator.of(context).pop(),
-              child: const Text(
-                'My Pals',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
+            const BackHeader(title: 'My Pals'),
             Expanded(child: _buildPals()),
           ],
         ),

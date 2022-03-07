@@ -4,6 +4,7 @@ import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/my_posts.dart';
+import 'package:treehole/pages/settings.dart';
 import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/user.dart';
 import 'package:treehole/utils/constants.dart';
@@ -45,9 +46,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                       child: CircleAvatar(
                         radius: 96 / 2,
                         backgroundColor: Theme.of(context).backgroundColor,
-                        backgroundImage: (state.profile.avatarUrl != null
-                            ? NetworkImage(state.profile.avatarUrl!)
-                            : defaultAvatarImage) as ImageProvider<Object>,
+                        backgroundImage: NetworkImage(
+                            state.profile.avatarUrl ?? defaultAvatarUrl),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -143,7 +143,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                 iconColor: Colors.blueGrey,
                 title: 'Settings',
                 onTap: () {
-                  Navigator.of(context).pushNamed(MatchPage.route);
+                  Navigator.of(context).pushNamed(SettingsPage.route);
                 },
               ),
             ],
