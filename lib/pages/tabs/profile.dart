@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/emotion.dart';
 import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
 import 'package:treehole/pages/my_pals.dart';
 import 'package:treehole/pages/my_posts.dart';
 import 'package:treehole/pages/settings.dart';
+import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/post.dart';
 import 'package:treehole/services/counts.dart';
 import 'package:treehole/services/user.dart';
 import 'package:treehole/utils/constants.dart';
@@ -20,6 +23,20 @@ class ProfileTabPage extends StatefulWidget {
 }
 
 class _ProfileTabPageState extends State<ProfileTabPage> {
+  String _todayEmoji = justsosoEmoji;
+
+  void _getTodayEmotion() async {
+    final userId =
+        RepositoryProvider.of<AuthenticationRepository>(context).userId();
+    final emotions = await RepositoryProvider.of<PostRepository>(context)
+        .fetchTodayPostEmotionsByAuthorId(userId);
+    final todayEmoji =
+        emotions.reduce((acc, cur) => acc + cur).toMaxEmotionEmoji();
+    setState(() {
+      _todayEmoji = todayEmoji;
+    });
+  }
+
   void _getCounts() async {
     BlocProvider.of<CountsCubit>(context).getCounts();
   }
@@ -28,6 +45,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   void initState() {
     super.initState();
     _getCounts();
+    _getTodayEmotion();
   }
 
   @override
@@ -64,76 +82,83 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => goUserIntroductionPage(
-                              context,
-                              Profile(
-                                id: state.profile.id,
-                                username: state.profile.username,
-                                avatarUrl: state.profile.avatarUrl,
+                      child: SizedBox(
+                        height: 102,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () => goUserIntroductionPage(
+                                context,
+                                Profile(
+                                  id: state.profile.id,
+                                  username: state.profile.username,
+                                  avatarUrl: state.profile.avatarUrl,
+                                ),
+                              ),
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  state.profile.username,
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                state.profile.username,
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                            Text('Today\'s emotion: $_todayEmoji'),
+                            BlocConsumer<CountsCubit, CountsState>(
+                              listener: (context, state) {
+                                if (state is CountsError) {
+                                  context.showErrorSnackbar(state.message);
+                                }
+                              },
+                              builder: (context, countsState) => Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  PairText(
+                                    count: countsState.postsCount,
+                                    name: 'Posts',
+                                    onTap: () async {
+                                      await goMyPostsPage(
+                                        context,
+                                        state.profile.id,
+                                      );
+                                      _getCounts();
+                                    },
+                                  ),
+                                  PairText(
+                                    count: countsState.palsCount,
+                                    name: 'Pals',
+                                    onTap: () async {
+                                      await goMyPalsPage(
+                                        context,
+                                        state.profile.id,
+                                      );
+                                      _getCounts();
+                                    },
+                                  ),
+                                  PairText(
+                                    count: countsState.likesCount,
+                                    name: 'Likes',
+                                    onTap: () async {
+                                      await goMyLikesPage(
+                                        context,
+                                        state.profile.id,
+                                      );
+                                      _getCounts();
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          BlocConsumer<CountsCubit, CountsState>(
-                            listener: (context, state) {
-                              if (state is CountsError) {
-                                context.showErrorSnackbar(state.message);
-                              }
-                            },
-                            builder: (context, countsState) => Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                PairText(
-                                  count: countsState.postsCount,
-                                  name: 'Posts',
-                                  onTap: () async {
-                                    await goMyPostsPage(
-                                      context,
-                                      state.profile.id,
-                                    );
-                                    _getCounts();
-                                  },
-                                ),
-                                PairText(
-                                  count: countsState.palsCount,
-                                  name: 'Pals',
-                                  onTap: () async {
-                                    await goMyPalsPage(
-                                      context,
-                                      state.profile.id,
-                                    );
-                                    _getCounts();
-                                  },
-                                ),
-                                PairText(
-                                  count: countsState.likesCount,
-                                  name: 'Likes',
-                                  onTap: () async {
-                                    await goMyLikesPage(
-                                      context,
-                                      state.profile.id,
-                                    );
-                                    _getCounts();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -142,20 +167,20 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               SubPageListItem(
                 icon: Icons.mood,
                 iconColor: Colors.deepPurple,
-                title: 'Mood',
+                title: 'Emotion',
                 onTap: () {
-                  Navigator.of(context).pushNamed(MatchPage.route);
+                  goEmotionPage(context, state.profile.id);
                 },
               ),
-              const Divider(height: 2, indent: 12, endIndent: 12),
-              SubPageListItem(
-                icon: Icons.list,
-                iconColor: Colors.blue,
-                title: 'Quality',
-                onTap: () {
-                  Navigator.of(context).pushNamed(MatchPage.route);
-                },
-              ),
+              // const Divider(height: 2, indent: 12, endIndent: 12),
+              // SubPageListItem(
+              //   icon: Icons.list,
+              //   iconColor: Colors.blue,
+              //   title: 'Quality',
+              //   onTap: () {
+              //     Navigator.of(context).pushNamed(MatchPage.route);
+              //   },
+              // ),
               const Divider(height: 2, indent: 12, endIndent: 12),
               SubPageListItem(
                 icon: Icons.fiber_smart_record_outlined,

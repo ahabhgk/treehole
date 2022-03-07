@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/emotion.dart';
 import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/pages/match.dart';
 import 'package:treehole/pages/my_likes.dart';
@@ -200,6 +201,12 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<void>(
               builder: (context) =>
                   MyLikesPage(userId: settings.arguments as String),
+              settings: settings,
+            );
+          case EmotionPage.route:
+            return MaterialPageRoute<void>(
+              builder: (context) =>
+                  EmotionPage(userId: settings.arguments as String),
               settings: settings,
             );
           case MatchPage.route:

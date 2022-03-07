@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:treehole/utils/constants.dart';
+
 class Emotion {
   Emotion({
     required this.joy,
@@ -30,6 +34,32 @@ class Emotion {
     };
   }
 
+  PercentageEmotion toPercentage() {
+    final sum = joy + mild + disgust + depressed + anger;
+    final j = (joy / sum) * 100;
+    final m = (mild / sum) * 100;
+    final d = (disgust / sum) * 100;
+    final de = (depressed / sum) * 100;
+    final a = 100 - j - m - d - de;
+    return PercentageEmotion(
+      joy: j,
+      mild: m,
+      disgust: d,
+      depressed: de,
+      anger: a,
+    );
+  }
+
+  String toMaxEmotionEmoji() {
+    final maxValue = max(max(max(max(joy, mild), disgust), depressed), anger);
+    if (maxValue == joy) return joyEmoji;
+    if (maxValue == mild) return mildEmoji;
+    if (maxValue == disgust) return disgustEmoji;
+    if (maxValue == depressed) return depressedEmoji;
+    if (maxValue == anger) return angerEmoji;
+    throw Exception('unreachable');
+  }
+
   Emotion operator +(Emotion o) {
     return Emotion(
       joy: joy + o.joy,
@@ -59,4 +89,20 @@ class Emotion {
       anger: anger * o,
     );
   }
+}
+
+class PercentageEmotion {
+  PercentageEmotion({
+    required this.joy,
+    required this.mild,
+    required this.disgust,
+    required this.depressed,
+    required this.anger,
+  });
+
+  final double joy;
+  final double mild;
+  final double disgust;
+  final double depressed;
+  final double anger;
 }

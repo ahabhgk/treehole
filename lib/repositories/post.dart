@@ -45,6 +45,19 @@ class PostRepository {
     }
   }
 
+  Future<List<Emotion>> fetchTodayPostEmotionsByAuthorId(String id) async {
+    final res = await _supabaseClient
+        .rpc('today_posts', params: {'user_id': id}).execute();
+    if (res.data != null && res.error == null) {
+      return (res.data as List<dynamic>)
+          .map((e) => Emotion.fromJson(e))
+          .toList();
+    } else {
+      throw PlatformException(
+          code: 'fetch user posts error', message: res.error?.message);
+    }
+  }
+
   Future<int> fetchPostsCountByAuthorId(String id) async {
     final res = await _supabaseClient
         .from('posts')
@@ -159,7 +172,6 @@ class PostRepository {
   }
 
   Future<Emotion> analyzePostEmotion(String content) async {
-    await Future.delayed(const Duration(milliseconds: 500));
     final rng = Random();
     return Emotion(
       joy: rng.nextDouble(),
