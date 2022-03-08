@@ -25,7 +25,7 @@ jobs:
         run: flutter test
 
       - name: Build
-        run: flutter build web --base-href "/treehole/" --web-renderer html
+        run: flutter build web --base-href "/treehole/" --web-renderer html --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANNON_KEY=${{ secrets.SUPABASE_ANNON_KEY }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
