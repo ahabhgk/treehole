@@ -80,16 +80,18 @@ class _NotificationTabPageState extends State<NotificationTabPage> {
     if (notifications != null) {
       return PullDown(
         onLoadMore: _loadMyNotifications,
-        items: notifications
-            .map((n) => NotificationWidget(
-                  kind: n.kind,
-                  senderUsername: n.senderUsername,
-                  senderAvatarUrl: n.senderAvatarUrl,
-                  createdAt: n.createdAt,
-                  isFollowed: n.isFollowed,
-                  onAgreeTap: () => _follow(n.receiverId, n.senderId),
-                ))
-            .toList(),
+        itemCount: notifications.length,
+        itemBuilder: (context, index) {
+          final n = notifications[index];
+          return NotificationWidget(
+            kind: n.kind,
+            senderUsername: n.senderUsername,
+            senderAvatarUrl: n.senderAvatarUrl,
+            createdAt: n.createdAt,
+            isFollowed: n.isFollowed,
+            onAgreeTap: () => _follow(n.receiverId, n.senderId),
+          );
+        },
       );
     } else {
       return const Loading();

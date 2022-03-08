@@ -31,15 +31,3 @@ void redirectToLogin(BuildContext context) {
 void redirectToTabs(BuildContext context) {
   Navigator.pushReplacementNamed(context, TabsPage.route);
 }
-
-List<Widget> withDivider(List<Widget> children) {
-  final List<Widget> res = children.fold(
-    [],
-    (acc, cur) => [
-      ...acc,
-      cur,
-      const Divider(height: 2, indent: 12, endIndent: 12),
-    ],
-  )..removeLast();
-  return res;
-}

@@ -18,7 +18,7 @@ class PalWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             CircleAvatar(

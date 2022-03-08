@@ -116,28 +116,30 @@ class _FoundTabPageState extends State<FoundTabPage> {
                     } else {
                       return PullDown(
                         onLoadMore: _loadMore,
-                        items: posts
-                            .map((post) => PostWidget(
-                                authorId: post.authorId,
-                                  permission: post.permission,
-                                  username: post.username,
-                                  avatarUrl: post.avatarUrl,
-                                  content: post.content,
-                                  likeCount: post.likeCount,
-                                  isLiked: post.isLiked,
-                                  createdAt: post.createdAt,
-                                  onLikeTap: () => _onLikeTap(post.id),
-                                  onUnlikeTap: () => _onUnlikeTap(post.id),
-                                  onAvatarTap: () => goUserIntroductionPage(
-                                    context,
-                                    Profile(
-                                      id: post.authorId,
-                                      username: post.username,
-                                      avatarUrl: post.avatarUrl,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return PostWidget(
+                            authorId: post.authorId,
+                            permission: post.permission,
+                            username: post.username,
+                            avatarUrl: post.avatarUrl,
+                            content: post.content,
+                            likeCount: post.likeCount,
+                            isLiked: post.isLiked,
+                            createdAt: post.createdAt,
+                            onLikeTap: () => _onLikeTap(post.id),
+                            onUnlikeTap: () => _onUnlikeTap(post.id),
+                            onAvatarTap: () => goUserIntroductionPage(
+                              context,
+                              Profile(
+                                id: post.authorId,
+                                username: post.username,
+                                avatarUrl: post.avatarUrl,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     }
                   } else if (state is FoundError) {

@@ -44,24 +44,33 @@ class _MyPalsPageState extends State<MyPalsPage> {
       future: _pals,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data!.isEmpty) {
+          final pals = snapshot.data;
+          if (pals!.isEmpty) {
             return const Center(child: Text('Go find some pals~'));
           }
-          final pals = snapshot.data!
-              .map((e) => PalWidget(
+          return ListView.separated(
+            itemCount: pals.length,
+            separatorBuilder: (context, index) => const Divider(
+              height: 2,
+              indent: 12,
+              endIndent: 12,
+            ),
+            itemBuilder: (context, index) {
+              final e = pals[index];
+              return PalWidget(
+                username: e.username,
+                avatarUrl: e.avatarUrl,
+                onTap: () => goUserIntroductionPage(
+                  context,
+                  Profile(
+                    id: e.id,
                     username: e.username,
                     avatarUrl: e.avatarUrl,
-                    onTap: () => goUserIntroductionPage(
-                      context,
-                      Profile(
-                        id: e.id,
-                        username: e.username,
-                        avatarUrl: e.avatarUrl,
-                      ),
-                    ),
-                  ))
-              .toList();
-          return ListView(children: withDivider(pals));
+                  ),
+                ),
+              );
+            },
+          );
         } else if (snapshot.hasError) {
           return Retry(onRetry: _loadMyPals);
         } else {

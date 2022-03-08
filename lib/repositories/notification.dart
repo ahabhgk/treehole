@@ -17,12 +17,9 @@ class NotificationRepository {
       'page': page,
     }).execute();
     if (res.data != null && res.error == null) {
-      return (res.data as List<dynamic>).map((e) {
-        print(e);
-        final a = Notification.fromJson(e);
-        print(a);
-        return a;
-      }).toList();
+      return (res.data as List<dynamic>)
+          .map((e) => Notification.fromJson(e))
+          .toList();
     } else {
       throw PlatformException(
           code: 'fetch user notifications error', message: res.error?.message);

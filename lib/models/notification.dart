@@ -18,7 +18,7 @@ class Notification {
   final String receiverId;
   final DateTime createdAt;
   final String senderUsername;
-  final String senderAvatarUrl;
+  final String? senderAvatarUrl;
   final bool? isFollowed;
 
   Notification.fromJson(Map<String, dynamic> json)

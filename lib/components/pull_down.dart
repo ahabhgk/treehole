@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:treehole/utils/constants.dart';
-import 'package:treehole/utils/ui.dart';
 
 class PullDown extends StatefulWidget {
   const PullDown({
     Key? key,
-    required this.items,
     required this.onLoadMore,
+    required this.itemBuilder,
+    required this.itemCount,
   }) : super(key: key);
 
   final Future<void> Function() onLoadMore;
-  final List<Widget> items;
+  final Widget Function(BuildContext, int) itemBuilder;
+  final int itemCount;
 
   @override
   _PullDownState createState() => _PullDownState();
@@ -44,9 +45,16 @@ class _PullDownState extends State<PullDown> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return ListView.separated(
       controller: _controller,
-      children: withDivider(widget.items),
+      itemCount: widget.itemCount,
+      separatorBuilder: (context, index) => const Divider(
+        height: 2,
+        indent: 12,
+        endIndent: 12,
+      ),
+      itemBuilder: widget.itemBuilder,
+      // children: withDivider(widget.items),
     );
   }
 }
