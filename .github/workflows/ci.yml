@@ -21,6 +21,12 @@ jobs:
       - name: Install
         run: flutter pub get
 
+      - name: Format
+        run: flutter format --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze .
+
       - name: Test
         run: flutter test
 

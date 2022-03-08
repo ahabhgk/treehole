@@ -6,7 +6,6 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/models/profile.dart';
 import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/repositories/authentication.dart';
-import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';

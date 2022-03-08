@@ -7,8 +7,6 @@ import 'package:treehole/components/retry.dart';
 import 'package:treehole/models/profile.dart';
 import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/repositories/follow.dart';
-import 'package:treehole/utils/ui.dart';
-import 'package:treehole/pages/introduction.dart';
 
 Future<void> goMyPalsPage(BuildContext context, String userId) {
   return Navigator.of(context).pushNamed(MyPalsPage.route, arguments: userId);
