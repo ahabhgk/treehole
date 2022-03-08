@@ -1,3 +1,6 @@
+# dev.sh with supabase url and anonKey
+/scripts/dev.sh
+
 # Miscellaneous
 *.class
 *.log
