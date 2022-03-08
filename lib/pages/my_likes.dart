@@ -108,6 +108,9 @@ class _MyLikesPageState extends State<MyLikesPage> {
   Widget _buildPosts() {
     final posts = _posts;
     if (posts != null) {
+      if (posts.isEmpty) {
+        return const Center(child: Text('Go likes some posts~'));
+      }
       return PullDown(
         onLoadMore: _loadMyLikedPosts,
         items: posts

@@ -11,6 +11,6 @@ String getDisplayTime(DateTime t) {
         : '${h.toString()} hours';
   } else {
     final ts = t.toLocal().toString();
-    return ts.substring(0, ts.length - 10);
+    return ts.substring(0, ts.length - 7);
   }
 }

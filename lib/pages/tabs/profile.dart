@@ -88,23 +88,12 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            GestureDetector(
-                              onTap: () => goUserIntroductionPage(
-                                context,
-                                Profile(
-                                  id: state.profile.id,
-                                  username: state.profile.username,
-                                  avatarUrl: state.profile.avatarUrl,
-                                ),
-                              ),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  state.profile.username,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                state.profile.username,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Text('Today\'s emotion: $_todayEmoji'),

@@ -5,8 +5,10 @@ import 'package:treehole/components/loading.dart';
 import 'package:treehole/components/pal.dart';
 import 'package:treehole/components/retry.dart';
 import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/utils/ui.dart';
+import 'package:treehole/pages/introduction.dart';
 
 Future<void> goMyPalsPage(BuildContext context, String userId) {
   return Navigator.of(context).pushNamed(MyPalsPage.route, arguments: userId);
@@ -42,10 +44,21 @@ class _MyPalsPageState extends State<MyPalsPage> {
       future: _pals,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return const Center(child: Text('Go find some pals~'));
+          }
           final pals = snapshot.data!
               .map((e) => PalWidget(
                     username: e.username,
                     avatarUrl: e.avatarUrl,
+                    onTap: () => goUserIntroductionPage(
+                      context,
+                      Profile(
+                        id: e.id,
+                        username: e.username,
+                        avatarUrl: e.avatarUrl,
+                      ),
+                    ),
                   ))
               .toList();
           return ListView(children: withDivider(pals));

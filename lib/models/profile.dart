@@ -21,4 +21,9 @@ class Profile {
       if (avatarUrl != null) 'avatar_url': avatarUrl,
     };
   }
+
+  static final emptyProfile = Profile(
+    id: '',
+    username: 'No user for now...',
+  );
 }

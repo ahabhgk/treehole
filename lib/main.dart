@@ -18,6 +18,7 @@ import 'package:treehole/pages/login.dart';
 import 'package:treehole/pages/signup.dart';
 import 'package:treehole/repositories/authentication.dart';
 import 'package:treehole/repositories/follow.dart';
+import 'package:treehole/repositories/notification.dart';
 import 'package:treehole/repositories/post.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/repositories/storage.dart';
@@ -78,6 +79,11 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<FollowRepository>(
           create: (context) => FollowRepository(
+            supabaseClient: _supabaseClient,
+          ),
+        ),
+        RepositoryProvider<NotificationRepository>(
+          create: (context) => NotificationRepository(
             supabaseClient: _supabaseClient,
           ),
         ),

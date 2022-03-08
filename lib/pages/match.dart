@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/loading.dart';
 import 'package:treehole/models/profile.dart';
+import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/repositories/authentication.dart';
+import 'package:treehole/repositories/follow.dart';
 import 'package:treehole/repositories/profile.dart';
 import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
@@ -37,7 +39,7 @@ class _MatchPageState extends State<MatchPage> {
       final pal = await RepositoryProvider.of<ProfileRepository>(context)
           .fetchMatchedPal(id);
       setState(() {
-        _pal = pal;
+        _pal = pal ?? Profile.emptyProfile;
       });
     } on PlatformException catch (e) {
       context.showErrorSnackbar(e.message ?? 'Error fetch matched user');
@@ -46,26 +48,32 @@ class _MatchPageState extends State<MatchPage> {
     }
   }
 
-  Future<void> _requestToBePal() async {
-    Navigator.of(context).pop();
-    context.showSnackbar('Request has been sent...');
-  }
-
   Widget _buildMatchResult() {
-    if (_pal == null) {
+    final pal = _pal;
+    if (pal == null) {
       return const Loading();
     } else {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 102 / 2,
+          GestureDetector(
+            onTap: () => goUserIntroductionPage(
+              context,
+              Profile(
+                id: pal.id,
+                username: pal.username,
+                avatarUrl: pal.avatarUrl,
+              ),
+            ),
             child: CircleAvatar(
-              radius: 96 / 2,
-              backgroundColor: Theme.of(context).backgroundColor,
-              backgroundImage:
-                  NetworkImage(_pal?.avatarUrl ?? defaultAvatarUrl),
+              radius: 102 / 2,
+              child: CircleAvatar(
+                radius: 96 / 2,
+                backgroundColor: Theme.of(context).backgroundColor,
+                backgroundImage:
+                    NetworkImage(_pal?.avatarUrl ?? defaultAvatarUrl),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -82,10 +90,6 @@ class _MatchPageState extends State<MatchPage> {
                 child: const Text('Another one'),
               ),
               const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: _requestToBePal,
-                child: const Text('Request to be pals'),
-              ),
             ],
           ),
           const SizedBox(height: 48),

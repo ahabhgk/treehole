@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:treehole/models/follow.dart';
 import 'package:treehole/models/profile.dart';
 
 class FollowRepository {
@@ -30,6 +31,35 @@ class FollowRepository {
     } else {
       throw PlatformException(
           code: 'get user posts count error', message: res.error?.message);
+    }
+  }
+
+  Future<void> followUser(String followingId, String followedId) async {
+    final res = await _supabaseClient.from('follow').insert([
+      {
+        'following_id': followingId,
+        'followed_id': followedId,
+      }
+    ]).execute();
+    if (res.data != null && res.error == null) {
+      return;
+    } else {
+      print(res.error);
+      throw PlatformException(
+          code: 'follow user error', message: res.error?.message);
+    }
+  }
+
+  Future<void> unfollowUser(String followingId, String followedId) async {
+    final res = await _supabaseClient.from('follow').delete().match({
+      'following_id': followingId,
+      'followed_id': followedId,
+    }).execute();
+    if (res.data != null && res.error == null) {
+      return;
+    } else {
+      throw PlatformException(
+          code: 'unfollow user error', message: res.error?.message);
     }
   }
 }

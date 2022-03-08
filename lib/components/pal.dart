@@ -5,7 +5,7 @@ class PalWidget extends StatelessWidget {
   const PalWidget({
     Key? key,
     required this.username,
-    this.avatarUrl,
+    required this.avatarUrl,
     this.onTap,
   }) : super(key: key);
 

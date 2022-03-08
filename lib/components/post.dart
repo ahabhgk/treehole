@@ -66,9 +66,7 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   void _onAvatarTap() {
-    if (widget.permission != Permission.anonymousForAnyone &&
-        widget.permission != Permission.anonymousForPals &&
-        widget.onAvatarTap != null) {
+    if (!isAnonymous(widget.permission) && widget.onAvatarTap != null) {
       widget.onAvatarTap!();
     }
   }

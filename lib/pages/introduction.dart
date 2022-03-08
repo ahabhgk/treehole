@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/components/header.dart';
 import 'package:treehole/components/pie.dart';
@@ -69,16 +70,35 @@ class _IntroductionPageState extends State<IntroductionPage> {
     });
   }
 
-  void _breakUp() {
-    setState(() {
-      _isMyPal = false;
-    });
+  void _breakUp() async {
+    try {
+      final id =
+          RepositoryProvider.of<AuthenticationRepository>(context).userId();
+      await RepositoryProvider.of<FollowRepository>(context)
+          .unfollowUser(id, widget.profile.id);
+      context.showSnackbar('Not pals anymore...');
+      setState(() {
+        _isMyPal = false;
+      });
+    } on PlatformException catch (e) {
+      context.showErrorSnackbar(e.message ?? 'Error follow user');
+    } catch (e) {
+      context.showErrorSnackbar('Error follow user');
+    }
   }
 
-  void _requestToBePals() {
-    setState(() {
-      _isMyPal = true;
-    });
+  void _requestToBePals() async {
+    try {
+      final id =
+          RepositoryProvider.of<AuthenticationRepository>(context).userId();
+      await RepositoryProvider.of<FollowRepository>(context)
+          .followUser(id, widget.profile.id);
+      context.showSnackbar('Request has been sent...');
+    } on PlatformException catch (e) {
+      context.showErrorSnackbar(e.message ?? 'Error follow user');
+    } catch (e) {
+      context.showErrorSnackbar('Error follow user');
+    }
   }
 
   @override

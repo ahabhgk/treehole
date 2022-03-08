@@ -76,11 +76,16 @@ class ProfileRepository {
     }
   }
 
-  Future<Profile> fetchMatchedPal(String userId) async {
+  Future<Profile?> fetchMatchedPal(String userId) async {
     final res = await _supabaseClient
         .rpc('match_pal', params: {'user_id': userId}).execute();
     if (res.data != null && res.error == null) {
-      final index = Random().nextInt((res.data as List<dynamic>).length);
+      final len = (res.data as List<dynamic>).length;
+      if (len == 0) {
+        return null;
+      }
+
+      final index = Random().nextInt(len);
       return Profile.fromJson(res.data[index]);
     } else {
       throw PlatformException(
