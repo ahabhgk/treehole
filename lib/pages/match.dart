@@ -98,7 +98,7 @@ class _MatchPageState extends State<MatchPage> {
                     ? () => Navigator.of(context).pushNamed(AddPostPage.route)
                     : _setPal,
                 child: Text(
-                  pal.isEmpty() ? 'Go publish more posts..' : 'Another one',
+                  pal.isEmpty() ? 'Go publish more posts~' : 'Another one',
                 ),
               ),
               const SizedBox(width: 12),

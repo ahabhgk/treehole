@@ -62,7 +62,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
                 final posts = state.posts;
                 if (posts != null) {
                   if (posts.isEmpty) {
-                    return const EmptyFiller(tips: 'Go find more!');
+                    return const EmptyFiller(tips: 'Go find more posts~');
                   } else {
                     return PullDown(
                       onLoadMore: _loadMore,
