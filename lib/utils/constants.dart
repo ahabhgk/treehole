@@ -1,3 +1,5 @@
+const appName = 'Treehole🦉';
+
 const persistentSessionKey = 'persistentSessionKey';
 const defaultAvatarUrl =
     'https://koavouexzdgkqdkeasfr.supabase.in/storage/v1/object/public/avatars/constants/default_avatar.png';

@@ -11,6 +11,7 @@ import 'package:treehole/components/retry.dart';
 import 'package:treehole/models/profile.dart';
 import 'package:treehole/pages/introduction.dart';
 import 'package:treehole/services/feed.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class FeedTabPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Header(child: Image.asset('assets/treehole.png')),
+        const TitleHeader(title: appName),
         Expanded(
           child: RefreshIndicator(
             onRefresh: _loadFeeds,

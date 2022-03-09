@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/services/user.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 import 'package:treehole/utils/validator.dart';
 
@@ -54,7 +55,10 @@ class _SignupPageState extends State<SignupPage> {
                 const SizedBox(height: 120),
                 Container(
                   alignment: Alignment.center,
-                  child: Image.asset('assets/treehole.png'),
+                  child: const Text(
+                    appName,
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 36),
                 TextFormField(

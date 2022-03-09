@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehole/services/user.dart';
+import 'package:treehole/utils/constants.dart';
 import 'package:treehole/utils/ui.dart';
 
 class LandingPage extends StatefulWidget {
@@ -32,7 +33,10 @@ class _LandingPageState extends State<LandingPage> {
               const SizedBox(height: 132),
               Container(
                 alignment: Alignment.center,
-                child: Image.asset('assets/treehole.png'),
+                child: const Text(
+                  appName,
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

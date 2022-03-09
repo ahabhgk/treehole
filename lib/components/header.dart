@@ -38,6 +38,22 @@ class Header extends StatelessWidget {
   }
 }
 
+class TitleHeader extends StatelessWidget {
+  const TitleHeader({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Header(
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
 class BackHeader extends StatelessWidget {
   const BackHeader({Key? key, required this.title}) : super(key: key);
 
