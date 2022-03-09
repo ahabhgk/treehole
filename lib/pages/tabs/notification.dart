@@ -61,8 +61,10 @@ class _NotificationTabPageState extends State<NotificationTabPage> {
                 senderUsername: n.senderUsername,
                 senderAvatarUrl: n.senderAvatarUrl,
                 isFollowed: n.kind == notification.NotificationKind.follow &&
-                    followingId == n.receiverId &&
-                    followedId == n.senderId,
+                        followingId == n.receiverId &&
+                        followedId == n.senderId
+                    ? true
+                    : n.isFollowed,
               ))
           .toList();
       setState(() {
@@ -102,12 +104,7 @@ class _NotificationTabPageState extends State<NotificationTabPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Header(
-          child: Text(
-            'Notifications',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
+        const TitleHeader(title: 'Notifications'),
         Expanded(child: _buildNotifications()),
       ],
     );

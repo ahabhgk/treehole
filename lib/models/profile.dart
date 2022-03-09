@@ -1,3 +1,5 @@
+import 'package:treehole/utils/constants.dart';
+
 class Profile {
   Profile({
     required this.id,
@@ -25,5 +27,10 @@ class Profile {
   static final emptyProfile = Profile(
     id: '',
     username: 'No user for now...',
+    avatarUrl: anonymousAvatarUrl,
   );
+
+  bool isEmpty() {
+    return id == '';
+  }
 }
