@@ -1,6 +1,6 @@
-# treehole
+# Treehole🦉
 
-rename: 小世界？
+A flutter app which you can say anything to it.
 
 ## supabase setup SQL
 
