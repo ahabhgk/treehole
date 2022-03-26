@@ -32,7 +32,9 @@ jobs:
         run: flutter test
 
       - name: Build
-        run: flutter build web --release --web-renderer html --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANNON_KEY=${{ secrets.SUPABASE_ANNON_KEY }}
+        run: |
+          sed -i.bak "s|\$SUPABASE_URL|${{ secrets.SUPABASE_URL }}|g" web/index.html
+          flutter build web --release --web-renderer html --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANNON_KEY=${{ secrets.SUPABASE_ANNON_KEY }}
 
       - name: Deploy
         uses: nwtgck/actions-netlify@v1.2
