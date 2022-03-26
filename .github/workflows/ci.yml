@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: github-pages
+    environment: production
     steps:
       - name: Clone
         uses: actions/checkout@v2
@@ -32,11 +32,15 @@ jobs:
         run: flutter test
 
       - name: Build
-        run: flutter build web --release --base-href "/treehole/" --web-renderer html --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANNON_KEY=${{ secrets.SUPABASE_ANNON_KEY }}
+        run: flutter build web --release --web-renderer html --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANNON_KEY=${{ secrets.SUPABASE_ANNON_KEY }}
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: nwtgck/actions-netlify@v1.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish-dir: './build/web'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
