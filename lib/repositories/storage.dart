@@ -19,7 +19,7 @@ class StorageRepository {
 
     final res = await _supabaseClient.storage.from('avatars').uploadBinary(
         fileName, bytes,
-        fileOptions: const FileOptions(cacheControl: '604800'));
+        fileOptions: const FileOptions(cacheControl: '31536000'));
     if (res.data != null && res.error == null) {
       final urlRes =
           _supabaseClient.storage.from('avatars').getPublicUrl(fileName);
