@@ -91,6 +91,7 @@ class _NotificationTabPageState extends State<NotificationTabPage> {
             senderAvatarUrl: n.senderAvatarUrl,
             createdAt: n.createdAt,
             isFollowed: n.isFollowed,
+            postContent: n.postContent,
             onAgreeTap: () => _follow(n.receiverId, n.senderId),
           );
         },

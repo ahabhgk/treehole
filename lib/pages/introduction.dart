@@ -171,11 +171,16 @@ class _IntroductionPageState extends State<IntroductionPage> {
                               count: state.postsCount,
                               name: 'Posts',
                               onTap: () async {
-                                await goMyPostsPage(
-                                  context,
-                                  widget.profile.id,
-                                );
-                                _getCounts();
+                                final myId = RepositoryProvider.of<
+                                        AuthenticationRepository>(context)
+                                    .userId();
+                                if (widget.profile.id == myId) {
+                                  await goMyPostsPage(
+                                    context,
+                                    widget.profile.id,
+                                  );
+                                  _getCounts();
+                                }
                               },
                             ),
                             PairText(

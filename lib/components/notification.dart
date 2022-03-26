@@ -11,6 +11,7 @@ class NotificationWidget extends StatelessWidget {
     required this.createdAt,
     this.onAgreeTap,
     this.isFollowed,
+    this.postContent,
   }) : super(key: key);
 
   final NotificationKind kind;
@@ -18,33 +19,59 @@ class NotificationWidget extends StatelessWidget {
   final String? senderAvatarUrl; // null for default avatar
   final void Function()? onAgreeTap;
   final bool? isFollowed; // only for follow notifications
+  final String? postContent; // only for like notifications
   final DateTime createdAt;
 
   String _buildTip() {
     if (kind == NotificationKind.follow) {
       if (isFollowed == true) {
-        return 'becomes your pal!';
+        return 'became your pal!';
       }
-      return 'requests to be pals with you~';
+      return 'requested to be pals with you~';
+    }
+    if (kind == NotificationKind.like) {
+      return 'liked you post!';
     }
     throw Exception('unreachable');
   }
 
-  List<Widget> _buildButton(BuildContext context) {
+  List<Widget> _buildBottom(BuildContext context) {
     if (kind == NotificationKind.follow) {
       if (isFollowed != true) {
         return [
-          OutlinedButton(
-            onPressed: onAgreeTap,
-            child: Text(
-              'Agree',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              OutlinedButton(
+                onPressed: onAgreeTap,
+                child: Text(
+                  'Agree',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
+            ],
           ),
         ];
       } else {
         return [];
       }
+    }
+    if (kind == NotificationKind.like && postContent != null) {
+      return [
+        Row(
+          children: [
+            const SizedBox(width: 48),
+            Expanded(
+              child: Text(
+                postContent!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        )
+      ];
     }
     return [];
   }
@@ -79,12 +106,7 @@ class NotificationWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ..._buildButton(context),
-            ],
-          )
+          ..._buildBottom(context),
         ],
       ),
     );

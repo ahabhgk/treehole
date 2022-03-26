@@ -1,5 +1,6 @@
 enum NotificationKind {
   follow,
+  like,
 }
 
 class Notification {
@@ -11,6 +12,7 @@ class Notification {
     required this.senderUsername,
     required this.senderAvatarUrl,
     this.isFollowed,
+    this.postContent,
   });
 
   final NotificationKind kind;
@@ -20,6 +22,7 @@ class Notification {
   final String senderUsername;
   final String? senderAvatarUrl;
   final bool? isFollowed;
+  final String? postContent;
 
   Notification.fromJson(Map<String, dynamic> json)
       : kind = NotificationKind.values[json['kind']],
@@ -28,5 +31,6 @@ class Notification {
         senderUsername = json['sender_username'],
         senderAvatarUrl = json['sender_avatar_url'],
         createdAt = DateTime.parse(json['created_at']),
-        isFollowed = json['is_followed'];
+        isFollowed = json['is_followed'],
+        postContent = json['post_content'];
 }

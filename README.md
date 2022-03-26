@@ -166,6 +166,7 @@ select
   follow.created_at as created_at,
   profiles.username as sender_username,
   profiles.avatar_url as sender_avatar_url,
+  -- only for follow
   (
     (
       select
@@ -175,10 +176,26 @@ select
       where
         pals.pal_id = follow.following_id
     ) :: int > 0
-  ) :: boolean as is_followed -- only for follow
+  ) :: boolean as is_followed,
+  null as post_content
 from
   follow
-  join profiles on follow.following_id = profiles.id;
+  join profiles on follow.following_id = profiles.id
+union all
+select
+  1 as kind,
+  likes.user_id as sender_id,
+  posts.author_id as receiver_id,
+  likes.created_at as created_at,
+  profiles.username as sender_username,
+  profiles.avatar_url as sender_avatar_url,
+  null as is_followed,
+  -- only for likes
+  posts.content as post_content
+from
+  likes
+  join profiles on likes.user_id = profiles.id
+  join posts on likes.post_id = posts.id;
 ```
 
 7. feed_posts function
@@ -342,7 +359,8 @@ OR REPLACE FUNCTION paged_notifications(user_id uuid, page int) RETURNS TABLE (
   sender_username varchar,
   sender_avatar_url text,
   created_at timestamp with time zone,
-  is_followed boolean
+  is_followed boolean,
+  post_content text
 ) LANGUAGE plpgsql AS $func$
 BEGIN
   RETURN QUERY
@@ -353,7 +371,8 @@ BEGIN
     notifications.sender_username,
     notifications.sender_avatar_url,
     notifications.created_at,
-    notifications.is_followed
+    notifications.is_followed,
+    notifications.post_content
   from notifications
   where notifications.receiver_id = $1
   order by created_at desc
