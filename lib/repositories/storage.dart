@@ -17,9 +17,9 @@ class StorageRepository {
     final fileExt = imageFile.name.split('.').last;
     final fileName = '$userId-${DateTime.now().toIso8601String()}.$fileExt';
 
-    final res = await _supabaseClient.storage
-        .from('avatars')
-        .uploadBinary(fileName, bytes);
+    final res = await _supabaseClient.storage.from('avatars').uploadBinary(
+        fileName, bytes,
+        fileOptions: const FileOptions(cacheControl: '604800'));
     if (res.data != null && res.error == null) {
       final urlRes =
           _supabaseClient.storage.from('avatars').getPublicUrl(fileName);
